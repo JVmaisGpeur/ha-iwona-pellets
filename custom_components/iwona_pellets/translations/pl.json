@@ -1,0 +1,320 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Piec Iwona Pellets",
+        "description": "Połączenie z konwerterem RS485 <-> WiFi/Ethernet (np. Elfin EW11) podłączonym do portu RS485 sterownika pieca.",
+        "data": {
+          "name": "Nazwa",
+          "host": "Adres IP lub nazwa hosta konwertera",
+          "port": "Port TCP",
+          "slave": "Adres podrzędny Modbus (slave)",
+          "framing": "Tryb konwertera"
+        },
+        "data_description": {
+          "framing": "„Przezroczysty”, jeśli konwerter przekazuje surowe ramki RS485 (domyślnie w Elfin EW11). „Modbus TCP”, jeśli działa jako brama Modbus.",
+          "slave": "1 działa w większości przypadków: zmień tylko wtedy, gdy zmieniono adres w menu Modbus pieca."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nie można połączyć się z konwerterem. Sprawdź adres IP i port TCP.",
+      "no_response": "Konwerter odpowiada, ale piec nie. Sprawdź okablowanie (zamień D+ / D-), adres slave oraz czy ustawienia szeregowe zgadzają się z tymi w menu Modbus pieca.",
+      "invalid_response": "Urządzenie odpowiedziało nieoczekiwanymi danymi. Sprawdź tryb konwertera i ustawienia szeregowe.",
+      "unknown": "Nieoczekiwany błąd, zobacz dziennik Home Assistant."
+    },
+    "abort": {
+      "already_configured": "Ten piec jest już skonfigurowany."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "scan_interval": "Interwał odpytywania",
+          "start_command": "Wartość zapisywana w celu uruchomienia pieca",
+          "sync_clock": "Ustaw zegar pieca z Home Assistant"
+        },
+        "data_description": {
+          "start_command": "1 = START (krótkie naciśnięcie), 2 = START z długim naciśnięciem. Spróbuj 2, jeśli 1 nie rozpala pieca.",
+          "sync_clock": "Jeśli data/godzina pieca różni się o więcej niż 2 minuty (np. po zaniku zasilania), zostanie ustawiona z Home Assistant (sprawdzanie przy każdym odpytaniu, najwyżej raz na godzinę)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "framing": {
+      "options": {
+        "rtu_over_tcp": "Przezroczysty (Modbus RTU przez TCP)",
+        "modbus_tcp": "Brama Modbus TCP"
+      }
+    },
+    "start_command": {
+      "options": {
+        "1": "1 – START",
+        "2": "2 – START (długie naciśnięcie)"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "boiler_temperature": {
+        "name": "Temperatura kotła"
+      },
+      "exhaust_temperature": {
+        "name": "Temperatura spalin"
+      },
+      "room_temperature": {
+        "name": "Temperatura pomieszczenia"
+      },
+      "feeder_temperature": {
+        "name": "Temperatura podajnika"
+      },
+      "hot_water_temperature": {
+        "name": "Temperatura ciepłej wody"
+      },
+      "buffer_temperature": {
+        "name": "Temperatura bufora"
+      },
+      "room_temperature_internal": {
+        "name": "Temperatura pomieszczenia (czujnik wewnętrzny)"
+      },
+      "room_temperature_extra": {
+        "name": "Temperatura pomieszczenia (czujnik dodatkowy)"
+      },
+      "exhaust_fan_power": {
+        "name": "Moc wentylatora wyciągowego"
+      },
+      "blow_in_fan_power": {
+        "name": "Moc wentylatora nadmuchowego"
+      },
+      "fan_speed": {
+        "name": "Prędkość wentylatora"
+      },
+      "throttle_position": {
+        "name": "Położenie przepustnicy"
+      },
+      "burner_hours": {
+        "name": "Czas pracy palnika"
+      },
+      "ignition_count": {
+        "name": "Liczba zapłonów"
+      },
+      "process_state": {
+        "name": "Stan",
+        "state": {
+          "stop": "Zatrzymany",
+          "fuelling": "Podawanie paliwa",
+          "standby": "Czuwanie",
+          "ignition_cleaning": "Zapłon (czyszczenie)",
+          "ignition": "Zapłon",
+          "power_stabilization": "Stabilizacja mocy",
+          "maximum_power": "Moc maksymalna",
+          "modulated_power": "Moc modulowana",
+          "minimum_power": "Moc minimalna",
+          "blow_in": "Przedmuch (usuwanie gazów)",
+          "extinction": "Wygaszanie",
+          "postcombustion": "Dopalanie",
+          "cleaning_opening": "Czyszczenie (otwieranie)",
+          "cleaning_closing": "Czyszczenie (zamykanie)",
+          "alarm": "Alarm",
+          "manual_opening": "Ręczne otwieranie",
+          "start_dose": "Dawka startowa",
+          "stabilization_wood": "Stabilizacja (drewno)",
+          "work_wood": "Praca (drewno)",
+          "add_wood": "Dokładanie drewna (przedmuch)"
+        }
+      },
+      "last_error": {
+        "name": "Ostatni błąd",
+        "state": {
+          "boiler_sensor": "Czujnik kotła",
+          "feeder_sensor": "Czujnik podajnika",
+          "exhaust_sensor": "Czujnik spalin",
+          "safety_input": "Wejście bezpieczeństwa",
+          "capacitive_unjamming": "Czujnik pojemnościowy",
+          "boiler_overheat": "Przegrzanie kotła",
+          "feeder_ignition": "Zapłon podajnika",
+          "no_pellets": "Brak pelletu",
+          "no_wood": "Brak drewna",
+          "flame_vanished": "Płomień zgasł",
+          "hot_water_sensor": "Czujnik ciepłej wody",
+          "buffer_overheat": "Przegrzanie bufora",
+          "power_loss": "Zanik zasilania / ręczne wyłączenie",
+          "buffer_sensor": "Czujnik bufora"
+        }
+      }
+    },
+    "binary_sensor": {
+      "flame": {
+        "name": "Płomień"
+      },
+      "feeder": {
+        "name": "Podajnik (ślimak)"
+      },
+      "ignition": {
+        "name": "Zapalarka"
+      },
+      "heating_pump": {
+        "name": "Pompa ogrzewania"
+      },
+      "hot_water_pump": {
+        "name": "Pompa ciepłej wody"
+      },
+      "cleaning": {
+        "name": "Mechanizm czyszczenia"
+      },
+      "alarm_output": {
+        "name": "Wyjście alarmu"
+      },
+      "safety_input": {
+        "name": "Wejście bezpieczeństwa"
+      },
+      "thermostat": {
+        "name": "Termostat"
+      },
+      "external_enable": {
+        "name": "Zezwolenie zewnętrzne"
+      },
+      "problem": {
+        "name": "Problem"
+      }
+    },
+    "number": {
+      "target_boiler_temperature": {
+        "name": "Zadana temperatura kotła"
+      },
+      "target_hot_water_temperature": {
+        "name": "Zadana temperatura ciepłej wody"
+      },
+      "target_room_temperature_day": {
+        "name": "Zadana temperatura pomieszczenia (dzień)"
+      },
+      "target_room_temperature_night": {
+        "name": "Zadana temperatura pomieszczenia (noc)"
+      }
+    },
+    "select": {
+      "program_mode": {
+        "name": "Tryb programu",
+        "state": {
+          "day": "Dzień",
+          "night": "Noc",
+          "off": "Wyłączony",
+          "prg1": "Program 1",
+          "prg2": "Program 2",
+          "prg3": "Program 3"
+        }
+      },
+      "work_mode": {
+        "name": "Tryb sezonowy",
+        "state": {
+          "winter": "Zima",
+          "summer": "Lato"
+        }
+      },
+      "fuel_mode": {
+        "name": "Rodzaj paliwa",
+        "state": {
+          "pellet": "Pellet",
+          "wood": "Drewno",
+          "wood_pellet": "Drewno i pellet"
+        }
+      }
+    },
+    "switch": {
+      "stove": {
+        "name": "Start/Stop"
+      }
+    },
+    "button": {
+      "clear_errors": {
+        "name": "Kasuj błędy"
+      },
+      "key_menu": {
+        "name": "Przycisk Menu"
+      },
+      "key_ok": {
+        "name": "Przycisk OK"
+      },
+      "key_plus": {
+        "name": "Przycisk +"
+      },
+      "key_minus": {
+        "name": "Przycisk -"
+      },
+      "sync_clock": {
+        "name": "Ustaw zegar"
+      }
+    },
+    "image": {
+      "display": {
+        "name": "Wyświetlacz"
+      }
+    }
+  },
+  "services": {
+    "read_registers": {
+      "name": "Odczyt rejestrów",
+      "description": "Odczytuje zakres rejestrów sterownika (tylko odczyt) i zwraca wartości niezerowe. Służy do znajdowania ustawień spoza udokumentowanych rejestrów podstawowych: wykonaj zrzut, zmień ustawienie w piecu, wykonaj kolejny i porównaj.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Piec",
+          "description": "Potrzebne tylko przy kilku skonfigurowanych piecach."
+        },
+        "start": {
+          "name": "Pierwszy rejestr",
+          "description": "Numer rejestru jak w dokumentacji producenta (np. 10101 dla pierwszego ustawienia według numeru)."
+        },
+        "count": {
+          "name": "Liczba rejestrów",
+          "description": "Do 5000."
+        },
+        "include_zero": {
+          "name": "Uwzględnij zera",
+          "description": "Zwraca także rejestry o wartości 0 (duży wynik)."
+        }
+      }
+    },
+    "explore_menu": {
+      "name": "Przeglądaj menu",
+      "description": "Naciska klawisze nawigacji (Menu, OK, +, -) i odczytuje ekrany jako tekst. Diagnostyka: wypisuje zmienione rejestry ustawień.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Piec",
+          "description": "Potrzebne tylko przy kilku piecach."
+        },
+        "keys": {
+          "name": "Klawisze",
+          "description": "Lista klawiszy: menu, ok, plus, minus."
+        },
+        "delay": {
+          "name": "Opóźnienie",
+          "description": "Sekundy po każdym klawiszu."
+        },
+        "each": {
+          "name": "Każdy ekran",
+          "description": "Zwróć ekran po każdym klawiszu."
+        },
+        "labels": {
+          "name": "Etykiety znaków",
+          "description": "Znaki dla nieznanych glifów."
+        },
+        "export_font": {
+          "name": "Eksportuj czcionkę",
+          "description": "Zwróć tabelę glifów."
+        }
+      }
+    },
+    "export_settings": {
+      "name": "Eksportuj ustawienia",
+      "description": "Odczytuje wszystkie ustawienia pieca (wartość, minimum, maksimum) według numeru rejestru, tylko odczyt. Przydatne jako kopia zapasowa i do porównań.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Piec",
+          "description": "Potrzebne tylko przy kilku skonfigurowanych piecach."
+        }
+      }
+    }
+  }
+}

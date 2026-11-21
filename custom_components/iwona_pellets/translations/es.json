@@ -1,0 +1,320 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Estufa Iwona Pellets",
+        "description": "Conexión al convertidor RS485 <-> WiFi/Ethernet (por ejemplo un Elfin EW11) conectado al puerto RS485 del controlador de la estufa.",
+        "data": {
+          "name": "Nombre",
+          "host": "Dirección IP o nombre de host del convertidor",
+          "port": "Puerto TCP",
+          "slave": "Dirección esclava Modbus",
+          "framing": "Modo del convertidor"
+        },
+        "data_description": {
+          "framing": "«Transparente» si el convertidor transmite las tramas RS485 en bruto (valor por defecto del Elfin EW11). «Modbus TCP» si actúa como pasarela Modbus.",
+          "slave": "1 funciona en la mayoría de los casos: cámbiela solo si ha modificado la dirección en el menú Modbus de la estufa."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "No se puede conectar con el convertidor. Compruebe su dirección IP y el puerto TCP.",
+      "no_response": "El convertidor responde pero la estufa no. Compruebe el cableado (invierta D+ / D-), la dirección esclava y que los ajustes serie coincidan con los del menú Modbus de la estufa.",
+      "invalid_response": "El dispositivo respondió con datos inesperados. Compruebe el modo del convertidor y los ajustes serie.",
+      "unknown": "Error inesperado, consulte el registro de Home Assistant."
+    },
+    "abort": {
+      "already_configured": "Esta estufa ya está configurada."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "scan_interval": "Intervalo de consulta",
+          "start_command": "Valor escrito para arrancar la estufa",
+          "sync_clock": "Ajustar el reloj de la estufa desde Home Assistant"
+        },
+        "data_description": {
+          "start_command": "1 = START (pulsación corta), 2 = START con pulsación larga. Pruebe 2 si 1 no enciende la estufa.",
+          "sync_clock": "Si la fecha/hora de la estufa difiere en más de 2 minutos (p. ej. tras un corte de corriente), se ajusta desde Home Assistant (se comprueba en cada consulta, como máximo una vez por hora)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "framing": {
+      "options": {
+        "rtu_over_tcp": "Transparente (Modbus RTU sobre TCP)",
+        "modbus_tcp": "Pasarela Modbus TCP"
+      }
+    },
+    "start_command": {
+      "options": {
+        "1": "1 – START",
+        "2": "2 – START (pulsación larga)"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "boiler_temperature": {
+        "name": "Temperatura de la caldera"
+      },
+      "exhaust_temperature": {
+        "name": "Temperatura de los humos"
+      },
+      "room_temperature": {
+        "name": "Temperatura ambiente"
+      },
+      "feeder_temperature": {
+        "name": "Temperatura del alimentador"
+      },
+      "hot_water_temperature": {
+        "name": "Temperatura del agua caliente"
+      },
+      "buffer_temperature": {
+        "name": "Temperatura del depósito de inercia"
+      },
+      "room_temperature_internal": {
+        "name": "Temperatura ambiente (sensor interno)"
+      },
+      "room_temperature_extra": {
+        "name": "Temperatura ambiente (sensor adicional)"
+      },
+      "exhaust_fan_power": {
+        "name": "Potencia del ventilador de extracción"
+      },
+      "blow_in_fan_power": {
+        "name": "Potencia del ventilador de soplado"
+      },
+      "fan_speed": {
+        "name": "Velocidad del ventilador"
+      },
+      "throttle_position": {
+        "name": "Posición de la compuerta"
+      },
+      "burner_hours": {
+        "name": "Tiempo de funcionamiento del quemador"
+      },
+      "ignition_count": {
+        "name": "Número de encendidos"
+      },
+      "process_state": {
+        "name": "Estado",
+        "state": {
+          "stop": "Parada",
+          "fuelling": "Alimentación",
+          "standby": "En espera",
+          "ignition_cleaning": "Encendido (limpieza)",
+          "ignition": "Encendido",
+          "power_stabilization": "Estabilización de potencia",
+          "maximum_power": "Potencia máxima",
+          "modulated_power": "Potencia modulada",
+          "minimum_power": "Potencia mínima",
+          "blow_in": "Soplado (evacuación de gases)",
+          "extinction": "Extinción",
+          "postcombustion": "Postcombustión",
+          "cleaning_opening": "Limpieza (apertura)",
+          "cleaning_closing": "Limpieza (cierre)",
+          "alarm": "Alarma",
+          "manual_opening": "Apertura manual",
+          "start_dose": "Dosis de arranque",
+          "stabilization_wood": "Estabilización (leña)",
+          "work_wood": "Funcionamiento (leña)",
+          "add_wood": "Añadiendo leña (soplado)"
+        }
+      },
+      "last_error": {
+        "name": "Último error",
+        "state": {
+          "boiler_sensor": "Sonda de caldera",
+          "feeder_sensor": "Sonda del alimentador",
+          "exhaust_sensor": "Sonda de humos",
+          "safety_input": "Entrada de seguridad",
+          "capacitive_unjamming": "Sensor capacitivo",
+          "boiler_overheat": "Sobrecalentamiento de la caldera",
+          "feeder_ignition": "Encendido del alimentador",
+          "no_pellets": "Sin pellets",
+          "no_wood": "Sin leña",
+          "flame_vanished": "Llama apagada",
+          "hot_water_sensor": "Sonda de agua caliente",
+          "buffer_overheat": "Sobrecalentamiento del depósito",
+          "power_loss": "Corte de corriente / apagado manual",
+          "buffer_sensor": "Sonda del depósito"
+        }
+      }
+    },
+    "binary_sensor": {
+      "flame": {
+        "name": "Llama"
+      },
+      "feeder": {
+        "name": "Alimentador (tornillo sin fin)"
+      },
+      "ignition": {
+        "name": "Encendedor"
+      },
+      "heating_pump": {
+        "name": "Bomba de calefacción"
+      },
+      "hot_water_pump": {
+        "name": "Bomba de agua caliente"
+      },
+      "cleaning": {
+        "name": "Mecanismo de limpieza"
+      },
+      "alarm_output": {
+        "name": "Salida de alarma"
+      },
+      "safety_input": {
+        "name": "Entrada de seguridad"
+      },
+      "thermostat": {
+        "name": "Termostato"
+      },
+      "external_enable": {
+        "name": "Habilitación externa"
+      },
+      "problem": {
+        "name": "Problema"
+      }
+    },
+    "number": {
+      "target_boiler_temperature": {
+        "name": "Temperatura objetivo de la caldera"
+      },
+      "target_hot_water_temperature": {
+        "name": "Temperatura objetivo del agua caliente"
+      },
+      "target_room_temperature_day": {
+        "name": "Temperatura ambiente objetivo (día)"
+      },
+      "target_room_temperature_night": {
+        "name": "Temperatura ambiente objetivo (noche)"
+      }
+    },
+    "select": {
+      "program_mode": {
+        "name": "Modo de programa",
+        "state": {
+          "day": "Día",
+          "night": "Noche",
+          "off": "Apagado",
+          "prg1": "Programa 1",
+          "prg2": "Programa 2",
+          "prg3": "Programa 3"
+        }
+      },
+      "work_mode": {
+        "name": "Modo estacional",
+        "state": {
+          "winter": "Invierno",
+          "summer": "Verano"
+        }
+      },
+      "fuel_mode": {
+        "name": "Combustible",
+        "state": {
+          "pellet": "Pellet",
+          "wood": "Leña",
+          "wood_pellet": "Leña y pellet"
+        }
+      }
+    },
+    "switch": {
+      "stove": {
+        "name": "Marcha/Paro"
+      }
+    },
+    "button": {
+      "clear_errors": {
+        "name": "Borrar errores"
+      },
+      "key_menu": {
+        "name": "Tecla Menú"
+      },
+      "key_ok": {
+        "name": "Tecla OK"
+      },
+      "key_plus": {
+        "name": "Tecla +"
+      },
+      "key_minus": {
+        "name": "Tecla -"
+      },
+      "sync_clock": {
+        "name": "Ajustar el reloj"
+      }
+    },
+    "image": {
+      "display": {
+        "name": "Pantalla"
+      }
+    }
+  },
+  "services": {
+    "read_registers": {
+      "name": "Leer registros",
+      "description": "Lee un rango de registros del controlador (solo lectura) y devuelve los valores distintos de cero. Sirve para encontrar ajustes que no están en los registros básicos documentados: haga un volcado, cambie el ajuste en la estufa, haga otro y compare.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Estufa",
+          "description": "Solo necesario si hay varias estufas configuradas."
+        },
+        "start": {
+          "name": "Primer registro",
+          "description": "Número de registro como en la documentación del fabricante (por ejemplo 10101 para el primer ajuste por número)."
+        },
+        "count": {
+          "name": "Número de registros",
+          "description": "Hasta 5000."
+        },
+        "include_zero": {
+          "name": "Incluir ceros",
+          "description": "Devuelve también los registros con valor 0 (resultado grande)."
+        }
+      }
+    },
+    "explore_menu": {
+      "name": "Explorar los menús",
+      "description": "Pulsa teclas de navegación (Menú, OK, +, -) y lee las pantallas como texto. Diagnóstico: enumera los registros de ajustes que han cambiado.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Estufa",
+          "description": "Solo necesario con varias estufas."
+        },
+        "keys": {
+          "name": "Teclas",
+          "description": "Lista de teclas: menu, ok, plus, minus."
+        },
+        "delay": {
+          "name": "Retardo",
+          "description": "Segundos tras cada tecla."
+        },
+        "each": {
+          "name": "Cada pantalla",
+          "description": "Devolver la pantalla tras cada tecla."
+        },
+        "labels": {
+          "name": "Etiquetas de glifos",
+          "description": "Caracteres para glifos desconocidos."
+        },
+        "export_font": {
+          "name": "Exportar la fuente",
+          "description": "Devolver la tabla de glifos."
+        }
+      }
+    },
+    "export_settings": {
+      "name": "Exportar los ajustes",
+      "description": "Lee todos los ajustes de la estufa (valor, mínimo, máximo) por número de registro, solo lectura. Útil como copia de seguridad y para comparar.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Estufa",
+          "description": "Solo necesario si hay varias estufas configuradas."
+        }
+      }
+    }
+  }
+}

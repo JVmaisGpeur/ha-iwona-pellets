@@ -1,0 +1,320 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Stufa Iwona Pellets",
+        "description": "Connessione al convertitore RS485 <-> WiFi/Ethernet (ad esempio un Elfin EW11) collegato alla porta RS485 del controller della stufa.",
+        "data": {
+          "name": "Nome",
+          "host": "Indirizzo IP o nome host del convertitore",
+          "port": "Porta TCP",
+          "slave": "Indirizzo slave Modbus",
+          "framing": "Modalità del convertitore"
+        },
+        "data_description": {
+          "framing": "«Trasparente» se il convertitore inoltra i frame RS485 grezzi (impostazione predefinita dell'Elfin EW11). «Modbus TCP» se funziona da gateway Modbus.",
+          "slave": "1 funziona nella maggior parte dei casi: modificalo solo se hai cambiato l'indirizzo nel menu Modbus della stufa."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossibile connettersi al convertitore. Controlla l'indirizzo IP e la porta TCP.",
+      "no_response": "Il convertitore risponde ma la stufa no. Controlla il cablaggio (inverti D+ / D-), l'indirizzo slave e che le impostazioni seriali coincidano con quelle del menu Modbus della stufa.",
+      "invalid_response": "Il dispositivo ha risposto con dati inattesi. Controlla la modalità del convertitore e le impostazioni seriali.",
+      "unknown": "Errore imprevisto, consulta il registro di Home Assistant."
+    },
+    "abort": {
+      "already_configured": "Questa stufa è già configurata."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "scan_interval": "Intervallo di interrogazione",
+          "start_command": "Valore scritto per avviare la stufa",
+          "sync_clock": "Imposta l'orologio della stufa da Home Assistant"
+        },
+        "data_description": {
+          "start_command": "1 = START (pressione breve), 2 = START con pressione lunga. Prova 2 se 1 non accende la stufa.",
+          "sync_clock": "Se data/ora della stufa differiscono di oltre 2 minuti (ad es. dopo un'interruzione di corrente), vengono impostate da Home Assistant (controllo a ogni interrogazione, al massimo una volta all'ora)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "framing": {
+      "options": {
+        "rtu_over_tcp": "Trasparente (Modbus RTU su TCP)",
+        "modbus_tcp": "Gateway Modbus TCP"
+      }
+    },
+    "start_command": {
+      "options": {
+        "1": "1 – START",
+        "2": "2 – START (pressione lunga)"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "boiler_temperature": {
+        "name": "Temperatura della caldaia"
+      },
+      "exhaust_temperature": {
+        "name": "Temperatura dei fumi"
+      },
+      "room_temperature": {
+        "name": "Temperatura ambiente"
+      },
+      "feeder_temperature": {
+        "name": "Temperatura dell'alimentatore"
+      },
+      "hot_water_temperature": {
+        "name": "Temperatura dell'acqua calda"
+      },
+      "buffer_temperature": {
+        "name": "Temperatura del puffer"
+      },
+      "room_temperature_internal": {
+        "name": "Temperatura ambiente (sensore interno)"
+      },
+      "room_temperature_extra": {
+        "name": "Temperatura ambiente (sensore aggiuntivo)"
+      },
+      "exhaust_fan_power": {
+        "name": "Potenza del ventilatore di estrazione"
+      },
+      "blow_in_fan_power": {
+        "name": "Potenza del ventilatore di insufflaggio"
+      },
+      "fan_speed": {
+        "name": "Velocità del ventilatore"
+      },
+      "throttle_position": {
+        "name": "Posizione della serranda"
+      },
+      "burner_hours": {
+        "name": "Ore di funzionamento del bruciatore"
+      },
+      "ignition_count": {
+        "name": "Numero di accensioni"
+      },
+      "process_state": {
+        "name": "Stato",
+        "state": {
+          "stop": "Arresto",
+          "fuelling": "Alimentazione",
+          "standby": "In attesa",
+          "ignition_cleaning": "Accensione (pulizia)",
+          "ignition": "Accensione",
+          "power_stabilization": "Stabilizzazione della potenza",
+          "maximum_power": "Potenza massima",
+          "modulated_power": "Potenza modulata",
+          "minimum_power": "Potenza minima",
+          "blow_in": "Insufflaggio (evacuazione gas)",
+          "extinction": "Spegnimento",
+          "postcombustion": "Postcombustione",
+          "cleaning_opening": "Pulizia (apertura)",
+          "cleaning_closing": "Pulizia (chiusura)",
+          "alarm": "Allarme",
+          "manual_opening": "Apertura manuale",
+          "start_dose": "Dose di avviamento",
+          "stabilization_wood": "Stabilizzazione (legna)",
+          "work_wood": "Funzionamento (legna)",
+          "add_wood": "Aggiunta legna (insufflaggio)"
+        }
+      },
+      "last_error": {
+        "name": "Ultimo errore",
+        "state": {
+          "boiler_sensor": "Sonda caldaia",
+          "feeder_sensor": "Sonda alimentatore",
+          "exhaust_sensor": "Sonda fumi",
+          "safety_input": "Ingresso di sicurezza",
+          "capacitive_unjamming": "Sensore capacitivo",
+          "boiler_overheat": "Surriscaldamento caldaia",
+          "feeder_ignition": "Accensione alimentatore",
+          "no_pellets": "Pellet esaurito",
+          "no_wood": "Legna esaurita",
+          "flame_vanished": "Fiamma spenta",
+          "hot_water_sensor": "Sonda acqua calda",
+          "buffer_overheat": "Surriscaldamento puffer",
+          "power_loss": "Mancanza di corrente / spegnimento manuale",
+          "buffer_sensor": "Sonda puffer"
+        }
+      }
+    },
+    "binary_sensor": {
+      "flame": {
+        "name": "Fiamma"
+      },
+      "feeder": {
+        "name": "Alimentatore (coclea)"
+      },
+      "ignition": {
+        "name": "Accenditore"
+      },
+      "heating_pump": {
+        "name": "Pompa di riscaldamento"
+      },
+      "hot_water_pump": {
+        "name": "Pompa acqua calda"
+      },
+      "cleaning": {
+        "name": "Meccanismo di pulizia"
+      },
+      "alarm_output": {
+        "name": "Uscita allarme"
+      },
+      "safety_input": {
+        "name": "Ingresso di sicurezza"
+      },
+      "thermostat": {
+        "name": "Termostato"
+      },
+      "external_enable": {
+        "name": "Abilitazione esterna"
+      },
+      "problem": {
+        "name": "Problema"
+      }
+    },
+    "number": {
+      "target_boiler_temperature": {
+        "name": "Temperatura caldaia impostata"
+      },
+      "target_hot_water_temperature": {
+        "name": "Temperatura acqua calda impostata"
+      },
+      "target_room_temperature_day": {
+        "name": "Temperatura ambiente impostata (giorno)"
+      },
+      "target_room_temperature_night": {
+        "name": "Temperatura ambiente impostata (notte)"
+      }
+    },
+    "select": {
+      "program_mode": {
+        "name": "Modalità programma",
+        "state": {
+          "day": "Giorno",
+          "night": "Notte",
+          "off": "Spento",
+          "prg1": "Programma 1",
+          "prg2": "Programma 2",
+          "prg3": "Programma 3"
+        }
+      },
+      "work_mode": {
+        "name": "Modalità stagionale",
+        "state": {
+          "winter": "Inverno",
+          "summer": "Estate"
+        }
+      },
+      "fuel_mode": {
+        "name": "Combustibile",
+        "state": {
+          "pellet": "Pellet",
+          "wood": "Legna",
+          "wood_pellet": "Legna e pellet"
+        }
+      }
+    },
+    "switch": {
+      "stove": {
+        "name": "Avvio/Arresto"
+      }
+    },
+    "button": {
+      "clear_errors": {
+        "name": "Cancella errori"
+      },
+      "key_menu": {
+        "name": "Tasto Menu"
+      },
+      "key_ok": {
+        "name": "Tasto OK"
+      },
+      "key_plus": {
+        "name": "Tasto +"
+      },
+      "key_minus": {
+        "name": "Tasto -"
+      },
+      "sync_clock": {
+        "name": "Imposta orologio"
+      }
+    },
+    "image": {
+      "display": {
+        "name": "Display"
+      }
+    }
+  },
+  "services": {
+    "read_registers": {
+      "name": "Leggi registri",
+      "description": "Legge un intervallo di registri del controller (sola lettura) e restituisce i valori diversi da zero. Serve a trovare impostazioni che non sono nei registri di base documentati: fai un dump, cambia l'impostazione sulla stufa, ne fai un altro e confronti.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Stufa",
+          "description": "Necessario solo se sono configurate più stufe."
+        },
+        "start": {
+          "name": "Primo registro",
+          "description": "Numero di registro come nella documentazione del produttore (ad esempio 10101 per la prima impostazione per numero)."
+        },
+        "count": {
+          "name": "Numero di registri",
+          "description": "Fino a 5000."
+        },
+        "include_zero": {
+          "name": "Includi gli zeri",
+          "description": "Restituisce anche i registri con valore 0 (risultato grande)."
+        }
+      }
+    },
+    "explore_menu": {
+      "name": "Esplora i menu",
+      "description": "Preme i tasti di navigazione (Menu, OK, +, -) e legge le schermate come testo. Diagnostica: elenca i registri delle impostazioni modificati.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Stufa",
+          "description": "Necessario solo con più stufe."
+        },
+        "keys": {
+          "name": "Tasti",
+          "description": "Elenco dei tasti: menu, ok, plus, minus."
+        },
+        "delay": {
+          "name": "Ritardo",
+          "description": "Secondi dopo ogni tasto."
+        },
+        "each": {
+          "name": "Ogni schermata",
+          "description": "Restituisce la schermata dopo ogni tasto."
+        },
+        "labels": {
+          "name": "Etichette dei glifi",
+          "description": "Caratteri per i glifi sconosciuti."
+        },
+        "export_font": {
+          "name": "Esporta il font",
+          "description": "Restituisce la tabella dei glifi."
+        }
+      }
+    },
+    "export_settings": {
+      "name": "Esporta le impostazioni",
+      "description": "Legge tutte le impostazioni della stufa (valore, minimo, massimo) per numero di registro, sola lettura. Utile come backup e per i confronti.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Stufa",
+          "description": "Necessario solo se sono configurate più stufe."
+        }
+      }
+    }
+  }
+}

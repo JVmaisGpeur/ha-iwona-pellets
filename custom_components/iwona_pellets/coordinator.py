@@ -20,10 +20,6 @@ from .const import (
     CONF_SCAN_INTERVAL,
     CONF_SLAVE,
     CONF_START_COMMAND,
-    CONF_ROOM_SENSOR,
-    DEFAULT_EXT_HYSTERESIS,
-    DEFAULT_EXT_SETPOINT,
-    SENSOR_MAX_AGE,
     CONF_SYNC_CLOCK,
     CLOCK_MAX_DRIFT,
     CLOCK_RETRY_SECONDS,
@@ -38,15 +34,9 @@ from .registers import (
     BLOCK_COUNTERS,
     BLOCK_DISPLAY,
     BLOCK_ERROR_LOG,
-    BLOCK_VTHERMO,
-    REG_VTHERMO_START,
-    VTHERMO_COUNT,
-    VTHERMO_MAX_SECONDS,
     REG_ERRORS_1,
     REG_ERRORS_2,
     parse_error_log,
-    decide_demand,
-    vthermo_duration,
     BLOCK_FUEL,
     BLOCK_INFO,
     BLOCK_MAX,
@@ -110,14 +100,6 @@ class IwonaCoordinator(DataUpdateCoordinator[dict[int, int]]):
         self._last_clock_attempt: float | None = None
         # decoded error log (oldest first), refreshed when the error registers change
         self.error_log: list[dict] = []
-        # regulation of the stove from an external room sensor (virtual thermostat 0)
-        self.room_sensor: str | None = entry.options.get(CONF_ROOM_SENSOR) or None
-        self.ext_enabled = False
-        self.ext_setpoint = DEFAULT_EXT_SETPOINT
-        self.ext_hysteresis = DEFAULT_EXT_HYSTERESIS
-        self.ext_demand = False
-        self.ext_temperature: float | None = None
-        self._scan_seconds = interval
         self._error_signature: tuple[int, int] | None = None
 
     @property
@@ -171,13 +153,12 @@ class IwonaCoordinator(DataUpdateCoordinator[dict[int, int]]):
     async def _async_update_data(self) -> dict[int, int]:
         data: dict[int, int] = {}
         try:
-            for block in (BLOCK_STATES, BLOCK_SETTINGS, BLOCK_COUNTERS, BLOCK_FUEL, BLOCK_VTHERMO):
+            for block in (BLOCK_STATES, BLOCK_SETTINGS, BLOCK_COUNTERS, BLOCK_FUEL):
                 data.update(await self._read_block(block))
         except ModbusError as err:
             raise UpdateFailed(f"Error communicating with the stove: {err}") from err
         await self._async_auto_sync_clock(data)
         await self._async_refresh_error_log(data)
-        await self._async_regulate(data)
         return data
 
     async def _async_refresh_error_log(self, data: dict[int, int]) -> None:
@@ -194,81 +175,6 @@ class IwonaCoordinator(DataUpdateCoordinator[dict[int, int]]):
         self.error_log = parse_error_log([values[start + i] for i in range(count)])
         self._error_signature = signature
 
-    def _external_temperature(self) -> float | None:
-        """Reading of the external room sensor, None if missing, invalid or too old."""
-        if not self.room_sensor:
-            return None
-        state = self.hass.states.get(self.room_sensor)
-        if state is None or state.state in ("unknown", "unavailable", ""):
-            return None
-        try:
-            value = float(state.state)
-        except ValueError:
-            return None
-        age = (dt_util.utcnow() - state.last_updated).total_seconds()
-        return value if age <= SENSOR_MAX_AGE else None
-
-    async def _async_regulate(self, data: dict[int, int]) -> None:
-        """Drive virtual thermostat 0 from the external room sensor.
-
-        The demand is renewed at every poll for a short time only, so it stops by
-        itself if Home Assistant, the sensor or the link stops working.
-        """
-        remaining = data.get(REG_VTHERMO_START, 0)
-        stopped = data.get(REG_PROCESS_STATE, 0) == 0
-        self.ext_temperature = self._external_temperature() if self.ext_enabled else None
-        demand = False
-        if self.ext_enabled and not stopped:
-            demand = decide_demand(
-                self.ext_temperature, self.ext_setpoint, self.ext_hysteresis, self.ext_demand
-            )
-        self.ext_demand = demand
-        if not self.ext_enabled and remaining == 0:
-            return  # regulation not in use: leave the thermostat alone
-        try:
-            if demand:
-                seconds = vthermo_duration(self._scan_seconds)
-                data[REG_VTHERMO_START] = await self.async_set_virtual_thermostat(0, seconds)
-            elif remaining:
-                data[REG_VTHERMO_START] = await self.async_set_virtual_thermostat(0, 0)
-        except (HomeAssistantError, ValueError) as err:
-            _LOGGER.warning("Cannot drive the virtual thermostat: %s", err)
-
-    async def async_set_regulation(self, enabled: bool | None = None,
-                                   setpoint: float | None = None,
-                                   hysteresis: float | None = None) -> None:
-        """Change the external regulation settings and apply them right away."""
-        if enabled is not None:
-            self.ext_enabled = enabled
-        if setpoint is not None:
-            self.ext_setpoint = setpoint
-        if hysteresis is not None:
-            self.ext_hysteresis = hysteresis
-        if self.data is not None:
-            data = dict(self.data)
-            await self._async_regulate(data)
-            self.async_set_updated_data(data)
-
-    async def async_set_virtual_thermostat(self, index: int, seconds: int) -> int:
-        """Keep virtual thermostat ``index`` active for ``seconds`` (0 = off).
-
-        Returns the value read back (the controller counts it down by itself).
-        """
-        if not 0 <= index < VTHERMO_COUNT:
-            raise ValueError(f"Invalid thermostat {index}")
-        if not 0 <= seconds <= VTHERMO_MAX_SECONDS:
-            raise ValueError(f"Seconds must be between 0 and {VTHERMO_MAX_SECONDS}")
-        register = REG_VTHERMO_START + index
-        try:
-            await self.client.write_register(to_address(register), seconds)
-            readback = (await self._read_block((register, 1)))[register]
-        except ModbusTimeout as err:
-            raise HomeAssistantError(
-                "The controller ignored the thermostat write (Modbus access level?)."
-            ) from err
-        except ModbusError as err:
-            raise HomeAssistantError(f"Cannot write the thermostat: {err}") from err
-        return readback
 
     @staticmethod
     def controller_clock(data: dict[int, int]) -> datetime | None:

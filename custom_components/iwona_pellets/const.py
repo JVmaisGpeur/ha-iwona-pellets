@@ -25,8 +25,3 @@ DEFAULT_START_COMMAND = 1
 DEFAULT_SYNC_CLOCK = True
 CLOCK_MAX_DRIFT = 120  # seconds of difference tolerated before the clock is rewritten
 CLOCK_RETRY_SECONDS = 3600  # minimum delay between two automatic attempts
-
-CONF_ROOM_SENSOR = "room_sensor"  # external room temperature sensor (entity id)
-SENSOR_MAX_AGE = 900  # seconds: an older external reading stops the heating demand
-DEFAULT_EXT_SETPOINT = 21.0
-DEFAULT_EXT_HYSTERESIS = 0.5

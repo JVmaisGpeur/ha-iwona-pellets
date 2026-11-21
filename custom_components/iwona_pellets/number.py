@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from homeassistant.components.number import NumberDeviceClass, NumberEntity, NumberMode
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .coordinator import IwonaConfigEntry, IwonaCoordinator
@@ -18,11 +17,7 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     coordinator = entry.runtime_data
-    entities: list[NumberEntity] = [IwonaNumber(coordinator, spec) for spec in NUMBERS]
-    if coordinator.room_sensor:
-        entities.append(IwonaRegulationNumber(coordinator, "external_setpoint", "ext_setpoint", 5, 30, 0.5))
-        entities.append(IwonaRegulationNumber(coordinator, "external_hysteresis", "ext_hysteresis", 0.1, 3, 0.1))
-    async_add_entities(entities)
+    async_add_entities(IwonaNumber(coordinator, spec) for spec in NUMBERS)
 
 
 class IwonaNumber(IwonaEntity, NumberEntity):
@@ -64,33 +59,3 @@ class IwonaNumber(IwonaEntity, NumberEntity):
             self._spec.reg, round(value / self._spec.scale)
         )
 
-
-class IwonaRegulationNumber(IwonaEntity, NumberEntity, RestoreEntity):
-    """Setpoint / hysteresis of the regulation from the external room sensor."""
-
-    _attr_device_class = NumberDeviceClass.TEMPERATURE
-    _attr_mode = NumberMode.BOX
-    _attr_native_unit_of_measurement = "\u00b0C"
-
-    def __init__(self, coordinator, key, attribute, low, high, step) -> None:
-        super().__init__(coordinator, key)
-        self._attribute = attribute
-        self._attr_native_min_value = low
-        self._attr_native_max_value = high
-        self._attr_native_step = step
-
-    async def async_added_to_hass(self) -> None:
-        await super().async_added_to_hass()
-        last = await self.async_get_last_state()
-        if last is not None:
-            try:
-                setattr(self.coordinator, self._attribute, float(last.state))
-            except ValueError:
-                pass
-
-    @property
-    def native_value(self) -> float:
-        return getattr(self.coordinator, self._attribute)
-
-    async def async_set_native_value(self, value: float) -> None:
-        await self.coordinator.async_set_regulation(**{self._attribute.removeprefix("ext_"): value})

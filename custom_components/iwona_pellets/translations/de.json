@@ -1,0 +1,320 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Iwona Pellets Ofen",
+        "description": "Verbindung zum RS485-<->WLAN/Ethernet-Konverter (z. B. Elfin EW11), der am RS485-Anschluss der Ofensteuerung angeschlossen ist.",
+        "data": {
+          "name": "Name",
+          "host": "IP-Adresse oder Hostname des Konverters",
+          "port": "TCP-Port",
+          "slave": "Modbus-Slave-Adresse",
+          "framing": "Konvertermodus"
+        },
+        "data_description": {
+          "framing": "„Transparent“, wenn der Konverter rohe RS485-Frames weiterleitet (Standard beim Elfin EW11). „Modbus TCP“, wenn er als Modbus-Gateway arbeitet.",
+          "slave": "1 funktioniert in den meisten Fällen: nur ändern, wenn Sie die Adresse im Modbus-Menü des Ofens geändert haben."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbindung zum Konverter nicht möglich. Prüfen Sie IP-Adresse und TCP-Port.",
+      "no_response": "Der Konverter antwortet, der Ofen aber nicht. Prüfen Sie die Verdrahtung (D+ / D- vertauschen), die Slave-Adresse und ob die seriellen Einstellungen mit denen im Modbus-Menü des Ofens übereinstimmen.",
+      "invalid_response": "Das Gerät hat mit unerwarteten Daten geantwortet. Prüfen Sie Konvertermodus und serielle Einstellungen.",
+      "unknown": "Unerwarteter Fehler, siehe Home-Assistant-Protokoll."
+    },
+    "abort": {
+      "already_configured": "Dieser Ofen ist bereits eingerichtet."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "scan_interval": "Abfrageintervall",
+          "start_command": "Zum Starten gesendeter Wert",
+          "sync_clock": "Ofenuhr von Home Assistant stellen"
+        },
+        "data_description": {
+          "start_command": "1 = START (kurzer Tastendruck), 2 = START mit langem Tastendruck. Versuchen Sie 2, wenn 1 den Ofen nicht zündet.",
+          "sync_clock": "Weicht Datum/Uhrzeit des Ofens um mehr als 2 Minuten ab (z. B. nach einem Stromausfall), wird sie von Home Assistant gestellt (Prüfung bei jeder Abfrage, höchstens einmal pro Stunde)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "framing": {
+      "options": {
+        "rtu_over_tcp": "Transparent (Modbus RTU über TCP)",
+        "modbus_tcp": "Modbus-TCP-Gateway"
+      }
+    },
+    "start_command": {
+      "options": {
+        "1": "1 – START",
+        "2": "2 – START (langer Druck)"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "boiler_temperature": {
+        "name": "Kesseltemperatur"
+      },
+      "exhaust_temperature": {
+        "name": "Abgastemperatur"
+      },
+      "room_temperature": {
+        "name": "Raumtemperatur"
+      },
+      "feeder_temperature": {
+        "name": "Fördertemperatur"
+      },
+      "hot_water_temperature": {
+        "name": "Warmwassertemperatur"
+      },
+      "buffer_temperature": {
+        "name": "Pufferspeichertemperatur"
+      },
+      "room_temperature_internal": {
+        "name": "Raumtemperatur (interner Fühler)"
+      },
+      "room_temperature_extra": {
+        "name": "Raumtemperatur (zusätzlicher Fühler)"
+      },
+      "exhaust_fan_power": {
+        "name": "Leistung Abgasventilator"
+      },
+      "blow_in_fan_power": {
+        "name": "Leistung Gebläse"
+      },
+      "fan_speed": {
+        "name": "Lüfterdrehzahl"
+      },
+      "throttle_position": {
+        "name": "Klappenstellung"
+      },
+      "burner_hours": {
+        "name": "Brennerbetriebszeit"
+      },
+      "ignition_count": {
+        "name": "Anzahl Zündungen"
+      },
+      "process_state": {
+        "name": "Zustand",
+        "state": {
+          "stop": "Gestoppt",
+          "fuelling": "Befüllung",
+          "standby": "Bereitschaft",
+          "ignition_cleaning": "Zündung (Reinigung)",
+          "ignition": "Zündung",
+          "power_stabilization": "Leistungsstabilisierung",
+          "maximum_power": "Maximale Leistung",
+          "modulated_power": "Modulierte Leistung",
+          "minimum_power": "Minimale Leistung",
+          "blow_in": "Ausblasen (Gasabfuhr)",
+          "extinction": "Löschen",
+          "postcombustion": "Nachverbrennung",
+          "cleaning_opening": "Reinigung (Öffnen)",
+          "cleaning_closing": "Reinigung (Schließen)",
+          "alarm": "Alarm",
+          "manual_opening": "Manuelles Öffnen",
+          "start_dose": "Startdosis",
+          "stabilization_wood": "Stabilisierung (Holz)",
+          "work_wood": "Betrieb (Holz)",
+          "add_wood": "Holz nachlegen (Ausblasen)"
+        }
+      },
+      "last_error": {
+        "name": "Letzter Fehler",
+        "state": {
+          "boiler_sensor": "Kesselfühler",
+          "feeder_sensor": "Förderfühler",
+          "exhaust_sensor": "Abgasfühler",
+          "safety_input": "Sicherheitseingang",
+          "capacitive_unjamming": "Kapazitiver Sensor",
+          "boiler_overheat": "Kesselüberhitzung",
+          "feeder_ignition": "Zündung Förderschnecke",
+          "no_pellets": "Keine Pellets",
+          "no_wood": "Kein Holz",
+          "flame_vanished": "Flamme erloschen",
+          "hot_water_sensor": "Warmwasserfühler",
+          "buffer_overheat": "Pufferüberhitzung",
+          "power_loss": "Stromausfall / manuell aus",
+          "buffer_sensor": "Pufferfühler"
+        }
+      }
+    },
+    "binary_sensor": {
+      "flame": {
+        "name": "Flamme"
+      },
+      "feeder": {
+        "name": "Förderschnecke"
+      },
+      "ignition": {
+        "name": "Zünder"
+      },
+      "heating_pump": {
+        "name": "Heizungspumpe"
+      },
+      "hot_water_pump": {
+        "name": "Warmwasserpumpe"
+      },
+      "cleaning": {
+        "name": "Reinigungsmechanismus"
+      },
+      "alarm_output": {
+        "name": "Alarmausgang"
+      },
+      "safety_input": {
+        "name": "Sicherheitseingang"
+      },
+      "thermostat": {
+        "name": "Thermostat"
+      },
+      "external_enable": {
+        "name": "Externe Freigabe"
+      },
+      "problem": {
+        "name": "Störung"
+      }
+    },
+    "number": {
+      "target_boiler_temperature": {
+        "name": "Solltemperatur Kessel"
+      },
+      "target_hot_water_temperature": {
+        "name": "Solltemperatur Warmwasser"
+      },
+      "target_room_temperature_day": {
+        "name": "Soll-Raumtemperatur (Tag)"
+      },
+      "target_room_temperature_night": {
+        "name": "Soll-Raumtemperatur (Nacht)"
+      }
+    },
+    "select": {
+      "program_mode": {
+        "name": "Programmmodus",
+        "state": {
+          "day": "Tag",
+          "night": "Nacht",
+          "off": "Aus",
+          "prg1": "Programm 1",
+          "prg2": "Programm 2",
+          "prg3": "Programm 3"
+        }
+      },
+      "work_mode": {
+        "name": "Saisonbetrieb",
+        "state": {
+          "winter": "Winter",
+          "summer": "Sommer"
+        }
+      },
+      "fuel_mode": {
+        "name": "Brennstoff",
+        "state": {
+          "pellet": "Pellets",
+          "wood": "Holz",
+          "wood_pellet": "Holz und Pellets"
+        }
+      }
+    },
+    "switch": {
+      "stove": {
+        "name": "Start/Stopp"
+      }
+    },
+    "button": {
+      "clear_errors": {
+        "name": "Fehler quittieren"
+      },
+      "key_menu": {
+        "name": "Taste Menü"
+      },
+      "key_ok": {
+        "name": "Taste OK"
+      },
+      "key_plus": {
+        "name": "Taste +"
+      },
+      "key_minus": {
+        "name": "Taste -"
+      },
+      "sync_clock": {
+        "name": "Uhr stellen"
+      }
+    },
+    "image": {
+      "display": {
+        "name": "Display"
+      }
+    }
+  },
+  "services": {
+    "read_registers": {
+      "name": "Register lesen",
+      "description": "Liest einen Bereich von Steuerungsregistern (nur lesend) und gibt die Werte ungleich null zurück. Zum Finden von Einstellungen außerhalb der dokumentierten Basisregister: Auslesen, Einstellung am Ofen ändern, erneut auslesen und vergleichen.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Ofen",
+          "description": "Nur nötig, wenn mehrere Öfen eingerichtet sind."
+        },
+        "start": {
+          "name": "Erstes Register",
+          "description": "Registernummer wie in der Herstellerdokumentation (z. B. 10101 für die erste Einstellung nach Nummer)."
+        },
+        "count": {
+          "name": "Anzahl Register",
+          "description": "Bis zu 5000."
+        },
+        "include_zero": {
+          "name": "Nullen einschließen",
+          "description": "Gibt auch Register mit dem Wert 0 zurück (großes Ergebnis)."
+        }
+      }
+    },
+    "explore_menu": {
+      "name": "Menüs erkunden",
+      "description": "Drückt Navigationstasten (Menü, OK, +, -) und liest die Bildschirme als Text. Diagnose: listet die geänderten Einstellungsregister auf.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Ofen",
+          "description": "Nur nötig bei mehreren Öfen."
+        },
+        "keys": {
+          "name": "Tasten",
+          "description": "Liste der Tasten: menu, ok, plus, minus."
+        },
+        "delay": {
+          "name": "Verzögerung",
+          "description": "Sekunden nach jeder Taste."
+        },
+        "each": {
+          "name": "Jeder Bildschirm",
+          "description": "Bildschirm nach jeder Taste zurückgeben."
+        },
+        "labels": {
+          "name": "Zeichenbezeichnungen",
+          "description": "Zeichen für unbekannte Glyphen."
+        },
+        "export_font": {
+          "name": "Schrift exportieren",
+          "description": "Glyphentabelle zurückgeben."
+        }
+      }
+    },
+    "export_settings": {
+      "name": "Einstellungen exportieren",
+      "description": "Liest alle Einstellungen des Ofens (Wert, Minimum, Maximum) nach Registernummer, nur lesend. Nützlich als Sicherung und zum Vergleichen.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Ofen",
+          "description": "Nur nötig, wenn mehrere Öfen eingerichtet sind."
+        }
+      }
+    }
+  }
+}

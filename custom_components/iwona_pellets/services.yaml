@@ -62,30 +62,6 @@ explore_menu:
       default: false
       selector:
         boolean:
-set_virtual_thermostat:
-  fields:
-    config_entry_id:
-      required: false
-      selector:
-        config_entry:
-          integration: iwona_pellets
-    index:
-      required: false
-      default: 0
-      selector:
-        number:
-          min: 0
-          max: 3
-          mode: box
-    seconds:
-      required: true
-      example: 120
-      selector:
-        number:
-          min: 0
-          max: 600
-          unit_of_measurement: s
-          mode: box
 export_settings:
   fields:
     config_entry_id:

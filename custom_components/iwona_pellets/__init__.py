@@ -19,7 +19,7 @@ from .const import DOMAIN
 from .coordinator import IwonaConfigEntry, IwonaCoordinator
 from .services import async_register_services
 
-CARD_VERSION = "13"  # bump when www/iwona-stove-card.js changes (cache busting)
+CARD_VERSION = "14"  # bump when www/iwona-stove-card.js changes (cache busting)
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 

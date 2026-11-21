@@ -55,9 +55,7 @@ def test_specs_are_consistent():
     for _, n in (reg.BLOCK_STATES, reg.BLOCK_SETTINGS, reg.BLOCK_INFO, reg.BLOCK_MIN, reg.BLOCK_MAX):
         assert n <= 127
     # nothing in the installer area can be written
-    thermostats = set(range(42000, 42004))
-    assert max(reg.WRITABLE_REGISTERS - thermostats) <= 123
-    assert thermostats <= reg.WRITABLE_REGISTERS
+    assert max(reg.WRITABLE_REGISTERS) <= 123
     # the limits of every number are inside the limit blocks
     for n in reg.NUMBERS:
         assert reg.BLOCK_MIN[0] <= n.reg + reg.LIMIT_MIN_OFFSET < reg.BLOCK_MIN[0] + reg.BLOCK_MIN[1]
@@ -80,13 +78,22 @@ def test_parse_error_log_ring_buffer_with_dates():
     assert log[0]["date"] is None
 
 
-def test_decide_demand_hysteresis_and_failsafe():
-    from conftest import load
-    r = load("registers")
-    d = r.decide_demand
-    assert d(None, 21, 0.5, True) is False          # no reading: never heat
-    assert d(20.4, 21, 0.5, False) is True          # below setpoint - hysteresis
-    assert d(20.8, 21, 0.5, False) is False         # inside the band: keep state
-    assert d(20.8, 21, 0.5, True) is True
-    assert d(21.0, 21, 0.5, True) is False          # setpoint reached
-    assert r.vthermo_duration(15) == 120 and r.vthermo_duration(300) == 600
+
+def test_translations_have_the_same_keys():
+    import json
+    from pathlib import Path
+
+    folder = Path(__file__).parent.parent / "custom_components" / "iwona_pellets" / "translations"
+
+    def keys(obj, prefix=""):
+        out = set()
+        for key, value in obj.items():
+            path = f"{prefix}/{key}"
+            out |= keys(value, path) if isinstance(value, dict) else {path}
+        return out
+
+    reference = keys(json.loads((folder / "en.json").read_text()))
+    files = sorted(folder.glob("*.json"))
+    assert {f.stem for f in files} >= {"en", "fr", "de", "es", "it", "nl", "pl"}
+    for f in files:
+        assert keys(json.loads(f.read_text())) == reference, f.name

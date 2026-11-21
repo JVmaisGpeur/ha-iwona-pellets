@@ -12,7 +12,8 @@
           "framing": "Mode du convertisseur"
         },
         "data_description": {
-          "framing": "« Transparent » si le convertisseur transmet les trames RS485 brutes (réglage par défaut de l'Elfin EW11). « Modbus TCP » s'il fait office de passerelle Modbus."
+          "framing": "« Transparent » si le convertisseur transmet les trames RS485 brutes (réglage par défaut de l'Elfin EW11). « Modbus TCP » s'il fait office de passerelle Modbus.",
+          "slave": "1 convient dans la grande majorité des cas : ne la modifiez que si vous avez changé l'adresse dans le menu Modbus du poêle."
         }
       }
     },
@@ -32,13 +33,11 @@
         "data": {
           "scan_interval": "Intervalle d'interrogation",
           "start_command": "Valeur écrite pour démarrer le poêle",
-          "sync_clock": "Mettre le poêle à l'heure de Home Assistant",
-          "room_sensor": "Sonde de température de la pièce"
+          "sync_clock": "Mettre le poêle à l'heure de Home Assistant"
         },
         "data_description": {
           "start_command": "1 = START (appui court), 2 = START avec appui long. Essayez 2 si 1 n'allume pas le poêle.",
-          "sync_clock": "Si la date/heure du poêle diffère de plus de 2 minutes (par exemple après une coupure de courant), elle est réécrite depuis Home Assistant (vérifié à chaque lecture, au plus une fois par heure).",
-          "room_sensor": "Capteur de Home Assistant utilisé pour piloter le poêle (thermostat virtuel 0). Laissez vide pour ne pas l'utiliser, puis activez « Régulation par sonde externe »."
+          "sync_clock": "Si la date/heure du poêle diffère de plus de 2 minutes (par exemple après une coupure de courant), elle est réécrite depuis Home Assistant (vérifié à chaque lecture, au plus une fois par heure)."
         }
       }
     }
@@ -193,12 +192,6 @@
       },
       "target_room_temperature_night": {
         "name": "Consigne ambiance (nuit)"
-      },
-      "external_setpoint": {
-        "name": "Consigne sonde externe"
-      },
-      "external_hysteresis": {
-        "name": "Hystérésis sonde externe"
       }
     },
     "select": {
@@ -232,9 +225,6 @@
     "switch": {
       "stove": {
         "name": "Start/Stop"
-      },
-      "external_regulation": {
-        "name": "Régulation par sonde externe"
       }
     },
     "button": {
@@ -313,24 +303,6 @@
         "export_font": {
           "name": "Exporter la police",
           "description": "Renvoie la table des glyphes."
-        }
-      }
-    },
-    "set_virtual_thermostat": {
-      "name": "Activer un thermostat virtuel",
-      "description": "Maintient un thermostat virtuel du poêle actif pendant N secondes (le poêle décompte seul, 0 = arrêt, 600 s maximum). À tester poêle allumé.",
-      "fields": {
-        "config_entry_id": {
-          "name": "Poêle",
-          "description": "Nécessaire seulement si plusieurs poêles sont configurés."
-        },
-        "index": {
-          "name": "Thermostat",
-          "description": "Numéro du thermostat virtuel (0 à 3)."
-        },
-        "seconds": {
-          "name": "Durée",
-          "description": "Secondes pendant lesquelles le thermostat reste actif."
         }
       }
     },

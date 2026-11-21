@@ -69,16 +69,11 @@ L'intégration a été développée avec l'aide de l'assistant d'IA Claude (Anth
 
 Ce projet n'a aucun lien avec Iwona Pellets ni P.W. KEY.
 
-## v0.11.0 — journal d'erreurs, export des réglages, thermostat virtuel
+## v0.11.0 — journal d'erreurs, export des réglages
 
 - Capteur « Dernière erreur » (diagnostic) : lit le journal 44000..44199 au démarrage et à chaque changement des registres d'erreur ; l'historique (30 derniers) est en attribut.
 - Service `export_settings` : tous les réglages (valeur, min, max) par registre, lecture seule.
-- Service `set_virtual_thermostat` (index 0..3, secondes 0..600) : écrit 42000+index. Le poêle décompte seul.
-  **Le comportement réel n'est pas encore vérifié** : à tester poêle allumé (lire le registre 9 et la puissance pendant que le thermostat est actif puis expiré) avant d'écrire une régulation sur une sonde externe.
 
-## v0.12.0 — régulation par sonde externe (thermostat virtuel 0)
+## Thermostats virtuels (abandonnés)
 
-- Option « Sonde de température de la pièce » (ex. `sensor.station_meteo_salle_a_manger_temperature`) ; elle crée l'interrupteur « Régulation par sonde externe » et les nombres consigne / hystérésis (21 °C / 0,5 °C par défaut, restaurés au redémarrage). Désactivée par défaut.
-- À chaque lecture (15 s) : demande ON si T ≤ consigne − hystérésis, OFF si T ≥ consigne ; la demande est réécrite (≥ 120 s) à chaque lecture, donc elle expire seule si HA, la sonde (> 15 min) ou la liaison s'arrête. Poêle arrêté : jamais de demande.
-- Test réel du 20/11/2026 : écrire 120 dans 42000 passe le registre 9 de 0 à 1 et le décompte tourne seul.
-- Non vérifié : effet sur la puissance, et combinaison avec le thermostat interne (le poêle peut garder sa propre demande ; baisser les consignes 107/108 si besoin).
+Essayés en v0.11/0.12 (registres 42000..42003) : l'écriture met bien le registre 9 à 1, mais la régulation par sonde externe n'a pas fonctionné sur le poêle ; la fonction a été retirée en v0.12.1.

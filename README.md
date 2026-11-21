@@ -4,7 +4,7 @@ Intégration personnalisée pour les poêles/cheminées **Iwona Pellets** équip
 
 > Projet communautaire non officiel, sans lien avec Iwona Pellets ni P.W. KEY. Utilisation à vos risques : un poêle est un appareil de chauffage. Lisez la section [Sécurité](#sécurité).
 
-> **Statut (v0.12.0)** : testée sur un poêle réel (RK-2014KH, firmware C407) : lecture des états, marche/arrêt, consignes, combustible, écran et touches virtuelles. La régulation par sonde externe est récente : voir ses limites plus bas. Les retours de test sont les bienvenus.
+> **Statut (v0.12.0)** : testée sur un poêle réel (RK-2014KH, firmware C407) : lecture des états, marche/arrêt, consignes, combustible, écran et touches virtuelles. Les retours de test sont les bienvenus.
 
 <p align="center">
   <img src="docs/apercu-carte.png" alt="Carte Cheminée en fonctionnement" width="300">
@@ -27,6 +27,10 @@ Intégration personnalisée pour les poêles/cheminées **Iwona Pellets** équip
 | Image | **Écran** du contrôleur (désactivée par défaut, voir plus bas) |
 
 Les entités rarement utiles (eau chaude, ballon tampon, capteurs ambiants secondaires, entrées de sécurité…) sont créées **désactivées** : activez-les dans la fiche de l'appareil si votre installation les utilise.
+
+## Langues
+
+L'intégration (entités, options, services) et la carte sont disponibles en français, anglais, allemand, espagnol, italien, néerlandais et polonais ; la langue suit celle de Home Assistant (anglais par défaut). Pour ajouter une langue, copiez `translations/en.json` en `translations/<code>.json` et traduisez les textes.
 
 ## Matériel
 
@@ -76,24 +80,14 @@ Copiez le dossier `custom_components/iwona_pellets` dans le dossier `config/cust
 Options (roue dentée de l'intégration) :
 
 - **Intervalle d'interrogation** : 15 s par défaut (5 à 300 s).
-- **Sonde de température de la pièce** (facultatif) : un capteur de Home Assistant pour piloter le poêle, voir *Régulation par sonde externe*.
 - **Valeur écrite pour démarrer** : `1` (appui court, par défaut) ou `2` (appui long). C'est la valeur envoyée quand on met l'interrupteur *Start/Stop* sur marche. Sur le poêle testé, les deux valeurs donnent le même résultat (voir *Limites connues*).
 
 ## Sécurité
 
-- L'intégration n'écrit que dans les registres de **réglages de base** (100 à 123) : marche/arrêt, consignes, mode de programme, mode saisonnier, effacement des erreurs, date et heure. Les seules exceptions sont le registre 10102 (mode de combustible) et le clavier virtuel 41512 (touches Menu/OK/+/−), dont les entités sont désactivées par défaut, avec les garde-fous décrits plus bas. Les thermostats virtuels (registres 42000 à 42003, durée de 0 à 600 s) sont aussi écrits quand la régulation par sonde externe est active. Tout autre réglage installateur (au-delà du registre 123) est refusé par le code.
+- L'intégration n'écrit que dans les registres de **réglages de base** (100 à 123) : marche/arrêt, consignes, mode de programme, mode saisonnier, effacement des erreurs, date et heure. Les seules exceptions sont le registre 10102 (mode de combustible) et le clavier virtuel 41512 (touches Menu/OK/+/−), dont les entités sont désactivées par défaut, avec les garde-fous décrits plus bas. Tout autre réglage installateur (au-delà du registre 123) est refusé par le code.
 - Le contrôleur **ignore silencieusement** une écriture refusée (valeur hors limites, niveau d'accès trop bas) : l'intégration affiche alors une erreur « le contrôleur n'a pas acquitté l'écriture ».
 - Le défaut « perte d'alimentation » du contrôleur inclut l'arrêt manuel : il apparaît dans la liste des erreurs, mais ne déclenche pas à lui seul le capteur *Défaut*.
 - Testez la marche/arrêt poêle froid et sous surveillance avant de bâtir des automatisations. Ne comptez jamais sur cette intégration pour une fonction de sécurité.
-
-## Régulation par sonde externe (thermostat virtuel)
-
-Le contrôleur propose quatre thermostats virtuels (registres 42000 à 42003) : écrire N secondes maintient la demande de chauffe pendant N secondes, le poêle décompte seul. Avec l'option *Sonde de température de la pièce*, l'intégration crée :
-
-- l'interrupteur **Régulation par sonde externe** (éteint par défaut) ;
-- la **Consigne sonde externe** (21 °C) et l'**Hystérésis sonde externe** (0,5 °C).
-
-La demande est active quand la sonde descend à *consigne − hystérésis* et s'arrête à la *consigne*. Elle est réécrite à chaque lecture pour 2 minutes au plus : elle expire seule si Home Assistant, la liaison ou la sonde (plus de 15 minutes sans mesure) s'arrête. Poêle arrêté, il n'y a jamais de demande. Le poêle garde son thermostat interne : pour que la sonde externe décide seule, baissez les consignes jour/nuit du poêle. Le service `iwona_pellets.set_virtual_thermostat` permet de tester à la main.
 
 ## Diagnostic
 

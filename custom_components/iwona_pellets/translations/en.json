@@ -12,7 +12,8 @@
           "framing": "Converter mode"
         },
         "data_description": {
-          "framing": "'Transparent' if the converter forwards raw RS485 frames (Elfin EW11 default). 'Modbus TCP' if it acts as a Modbus gateway."
+          "framing": "'Transparent' if the converter forwards raw RS485 frames (Elfin EW11 default). 'Modbus TCP' if it acts as a Modbus gateway.",
+          "slave": "1 works in most cases: only change it if you changed the address in the stove's Modbus menu."
         }
       }
     },
@@ -32,13 +33,11 @@
         "data": {
           "scan_interval": "Polling interval",
           "start_command": "Value written to start the stove",
-          "sync_clock": "Set the stove clock from Home Assistant",
-          "room_sensor": "Room temperature sensor"
+          "sync_clock": "Set the stove clock from Home Assistant"
         },
         "data_description": {
           "start_command": "1 = START (short key press), 2 = START with a long key press. Try 2 if 1 does not light the stove.",
-          "sync_clock": "If the stove date/time is off by more than 2 minutes (e.g. after a power cut), set it from Home Assistant (checked at each poll, at most once an hour).",
-          "room_sensor": "Home Assistant sensor used to drive the stove (virtual thermostat 0). Leave empty to disable, then turn on the External sensor regulation switch."
+          "sync_clock": "If the stove date/time is off by more than 2 minutes (e.g. after a power cut), set it from Home Assistant (checked at each poll, at most once an hour)."
         }
       }
     }
@@ -193,12 +192,6 @@
       },
       "target_room_temperature_night": {
         "name": "Target room temperature (night)"
-      },
-      "external_setpoint": {
-        "name": "External sensor setpoint"
-      },
-      "external_hysteresis": {
-        "name": "External sensor hysteresis"
       }
     },
     "select": {
@@ -232,9 +225,6 @@
     "switch": {
       "stove": {
         "name": "Start/Stop"
-      },
-      "external_regulation": {
-        "name": "External sensor regulation"
       }
     },
     "button": {
@@ -313,24 +303,6 @@
         "export_font": {
           "name": "Export font",
           "description": "Return the glyph table."
-        }
-      }
-    },
-    "set_virtual_thermostat": {
-      "name": "Activate a virtual thermostat",
-      "description": "Keeps a virtual thermostat of the stove active for N seconds (the stove counts it down by itself, 0 = off, 600 s maximum). Test with the stove running.",
-      "fields": {
-        "config_entry_id": {
-          "name": "Stove",
-          "description": "Only needed if several stoves are configured."
-        },
-        "index": {
-          "name": "Thermostat",
-          "description": "Virtual thermostat number (0 to 3)."
-        },
-        "seconds": {
-          "name": "Duration",
-          "description": "Seconds the thermostat stays active."
         }
       }
     },

@@ -16,8 +16,6 @@ from homeassistant.config_entries import (
 from homeassistant.const import CONF_HOST, CONF_NAME, CONF_PORT
 from homeassistant.core import callback
 from homeassistant.helpers.selector import (
-    EntitySelector,
-    EntitySelectorConfig,
     NumberSelector,
     NumberSelectorConfig,
     NumberSelectorMode,
@@ -32,7 +30,6 @@ from .const import (
     CONF_SLAVE,
     CONF_START_COMMAND,
     CONF_SYNC_CLOCK,
-    CONF_ROOM_SENSOR,
     DEFAULT_NAME,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
@@ -63,8 +60,8 @@ USER_SCHEMA = vol.Schema(
         vol.Required(CONF_PORT, default=DEFAULT_PORT): vol.All(
             vol.Coerce(int), vol.Range(min=1, max=65535)
         ),
-        vol.Required(CONF_SLAVE, default=DEFAULT_SLAVE): vol.All(
-            vol.Coerce(int), vol.Range(min=1, max=247)
+        vol.Required(CONF_SLAVE, default=DEFAULT_SLAVE): NumberSelector(
+            NumberSelectorConfig(min=1, max=247, step=1, mode=NumberSelectorMode.BOX)
         ),
         vol.Required(CONF_FRAMING, default=FRAMING_RTU_OVER_TCP): SelectSelector(
             SelectSelectorConfig(
@@ -99,7 +96,12 @@ class IwonaConfigFlow(ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
         if user_input is not None:
             host = user_input[CONF_HOST].strip()
-            user_input = {**user_input, CONF_HOST: host}
+            user_input = {
+                **user_input,
+                CONF_HOST: host,
+                CONF_SLAVE: int(user_input[CONF_SLAVE]),  # the number box returns a float
+                CONF_PORT: int(user_input[CONF_PORT]),
+            }
             await self.async_set_unique_id(
                 f"{host.lower()}:{user_input[CONF_PORT]}:{user_input[CONF_SLAVE]}"
             )
@@ -144,14 +146,8 @@ class IwonaOptionsFlow(OptionsFlow):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         if user_input is not None:
-            extra = (
-                {CONF_ROOM_SENSOR: user_input[CONF_ROOM_SENSOR]}
-                if user_input.get(CONF_ROOM_SENSOR)
-                else {}
-            )
             return self.async_create_entry(
                 data={
-                    **extra,
                     CONF_SCAN_INTERVAL: int(user_input[CONF_SCAN_INTERVAL]),
                     CONF_START_COMMAND: int(user_input[CONF_START_COMMAND]),
                     CONF_SYNC_CLOCK: bool(user_input[CONF_SYNC_CLOCK]),
@@ -182,10 +178,6 @@ class IwonaOptionsFlow(OptionsFlow):
                         mode=SelectSelectorMode.DROPDOWN,
                     )
                 ),
-                vol.Optional(
-                    CONF_ROOM_SENSOR,
-                    description={"suggested_value": options.get(CONF_ROOM_SENSOR)},
-                ): EntitySelector(EntitySelectorConfig(domain="sensor", device_class="temperature")),
                 vol.Required(
                     CONF_SYNC_CLOCK,
                     default=options.get(CONF_SYNC_CLOCK, DEFAULT_SYNC_CLOCK),

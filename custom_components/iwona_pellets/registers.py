@@ -86,12 +86,6 @@ REG_KEYBOARD = 41512
 # deliberately not exposed, the Start/Stop switch is used instead.
 KEYS = {"menu": 5, "ok": 1, "plus": 3, "minus": 4}
 
-# Virtual thermostats: writing N seconds (1..600) keeps thermostat i "active" for N
-# seconds, the controller counts it down by itself (0 = off).
-REG_VTHERMO_START = 42000
-VTHERMO_COUNT = 4
-VTHERMO_MAX_SECONDS = 600
-BLOCK_VTHERMO = (REG_VTHERMO_START, VTHERMO_COUNT)
 BLOCK_ERROR_LOG = (44000, 200)  # 100 events of two registers
 
 BLOCK_DISPLAY = (41000, 512)  # LCD image, read on demand (not by the poll)
@@ -240,27 +234,6 @@ def parse_error_log(values: list[int]) -> list[dict]:
                 }
             )
     return result
-
-
-def decide_demand(
-    temperature: float | None, setpoint: float, hysteresis: float, demand: bool
-) -> bool:
-    """Heating demand with hysteresis: on at setpoint - hysteresis, off at setpoint.
-
-    Without a valid temperature there is never a demand (fail safe).
-    """
-    if temperature is None:
-        return False
-    if temperature <= setpoint - hysteresis:
-        return True
-    if temperature >= setpoint:
-        return False
-    return demand
-
-
-def vthermo_duration(scan_interval: int) -> int:
-    """Seconds written to the virtual thermostat at every poll (outlives a missed poll)."""
-    return max(120, min(VTHERMO_MAX_SECONDS, 3 * int(scan_interval)))
 
 
 def signed16(value: int) -> int:
@@ -414,6 +387,5 @@ WRITABLE_REGISTERS = frozenset(
         REG_TARGET_ROOM_NIGHT,
         REG_PROGRAM_MODE,
         *CLOCK_REGISTERS,
-        *range(REG_VTHERMO_START, REG_VTHERMO_START + VTHERMO_COUNT),
     }
 )

@@ -1,0 +1,320 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Iwona Pellets kachel",
+        "description": "Verbinding met de RS485 <-> WiFi/Ethernet-converter (bijvoorbeeld een Elfin EW11) die op de RS485-poort van de kachelregeling is aangesloten.",
+        "data": {
+          "name": "Naam",
+          "host": "IP-adres of hostnaam van de converter",
+          "port": "TCP-poort",
+          "slave": "Modbus-slave-adres",
+          "framing": "Convertermodus"
+        },
+        "data_description": {
+          "framing": "„Transparant” als de converter ruwe RS485-frames doorstuurt (standaard van de Elfin EW11). „Modbus TCP” als hij als Modbus-gateway werkt.",
+          "slave": "1 werkt in de meeste gevallen: wijzig het alleen als u het adres in het Modbus-menu van de kachel hebt veranderd."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kan geen verbinding maken met de converter. Controleer het IP-adres en de TCP-poort.",
+      "no_response": "De converter antwoordt maar de kachel niet. Controleer de bedrading (D+ / D- omwisselen), het slave-adres en of de seriële instellingen overeenkomen met die in het Modbus-menu van de kachel.",
+      "invalid_response": "Het apparaat antwoordde met onverwachte gegevens. Controleer de convertermodus en de seriële instellingen.",
+      "unknown": "Onverwachte fout, zie het Home Assistant-logboek."
+    },
+    "abort": {
+      "already_configured": "Deze kachel is al ingesteld."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "scan_interval": "Pollinginterval",
+          "start_command": "Waarde die wordt geschreven om de kachel te starten",
+          "sync_clock": "Kachelklok instellen vanuit Home Assistant"
+        },
+        "data_description": {
+          "start_command": "1 = START (korte toetsdruk), 2 = START met lange toetsdruk. Probeer 2 als 1 de kachel niet aansteekt.",
+          "sync_clock": "Als datum/tijd van de kachel meer dan 2 minuten afwijkt (bijv. na een stroomuitval), wordt ze vanuit Home Assistant ingesteld (gecontroleerd bij elke poll, hooguit eenmaal per uur)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "framing": {
+      "options": {
+        "rtu_over_tcp": "Transparant (Modbus RTU over TCP)",
+        "modbus_tcp": "Modbus TCP-gateway"
+      }
+    },
+    "start_command": {
+      "options": {
+        "1": "1 – START",
+        "2": "2 – START (lange druk)"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "boiler_temperature": {
+        "name": "Keteltemperatuur"
+      },
+      "exhaust_temperature": {
+        "name": "Rookgastemperatuur"
+      },
+      "room_temperature": {
+        "name": "Kamertemperatuur"
+      },
+      "feeder_temperature": {
+        "name": "Temperatuur toevoer"
+      },
+      "hot_water_temperature": {
+        "name": "Warmwatertemperatuur"
+      },
+      "buffer_temperature": {
+        "name": "Buffertemperatuur"
+      },
+      "room_temperature_internal": {
+        "name": "Kamertemperatuur (interne sensor)"
+      },
+      "room_temperature_extra": {
+        "name": "Kamertemperatuur (extra sensor)"
+      },
+      "exhaust_fan_power": {
+        "name": "Vermogen afzuigventilator"
+      },
+      "blow_in_fan_power": {
+        "name": "Vermogen blaasventilator"
+      },
+      "fan_speed": {
+        "name": "Ventilatortoerental"
+      },
+      "throttle_position": {
+        "name": "Klepstand"
+      },
+      "burner_hours": {
+        "name": "Branderbedrijfstijd"
+      },
+      "ignition_count": {
+        "name": "Aantal ontstekingen"
+      },
+      "process_state": {
+        "name": "Status",
+        "state": {
+          "stop": "Gestopt",
+          "fuelling": "Vullen",
+          "standby": "Stand-by",
+          "ignition_cleaning": "Ontsteking (reiniging)",
+          "ignition": "Ontsteking",
+          "power_stabilization": "Vermogensstabilisatie",
+          "maximum_power": "Maximaal vermogen",
+          "modulated_power": "Gemoduleerd vermogen",
+          "minimum_power": "Minimaal vermogen",
+          "blow_in": "Doorblazen (gasafvoer)",
+          "extinction": "Doven",
+          "postcombustion": "Nabranding",
+          "cleaning_opening": "Reiniging (openen)",
+          "cleaning_closing": "Reiniging (sluiten)",
+          "alarm": "Alarm",
+          "manual_opening": "Handmatig openen",
+          "start_dose": "Startdosis",
+          "stabilization_wood": "Stabilisatie (hout)",
+          "work_wood": "In bedrijf (hout)",
+          "add_wood": "Hout bijvullen (doorblazen)"
+        }
+      },
+      "last_error": {
+        "name": "Laatste fout",
+        "state": {
+          "boiler_sensor": "Ketelsensor",
+          "feeder_sensor": "Toevoersensor",
+          "exhaust_sensor": "Rookgassensor",
+          "safety_input": "Veiligheidsingang",
+          "capacitive_unjamming": "Capacitieve sensor",
+          "boiler_overheat": "Oververhitting ketel",
+          "feeder_ignition": "Ontsteking toevoer",
+          "no_pellets": "Geen pellets",
+          "no_wood": "Geen hout",
+          "flame_vanished": "Vlam gedoofd",
+          "hot_water_sensor": "Warmwatersensor",
+          "buffer_overheat": "Oververhitting buffer",
+          "power_loss": "Stroomuitval / handmatig uit",
+          "buffer_sensor": "Buffersensor"
+        }
+      }
+    },
+    "binary_sensor": {
+      "flame": {
+        "name": "Vlam"
+      },
+      "feeder": {
+        "name": "Toevoer (schroef)"
+      },
+      "ignition": {
+        "name": "Ontsteker"
+      },
+      "heating_pump": {
+        "name": "Verwarmingspomp"
+      },
+      "hot_water_pump": {
+        "name": "Warmwaterpomp"
+      },
+      "cleaning": {
+        "name": "Reinigingsmechanisme"
+      },
+      "alarm_output": {
+        "name": "Alarmuitgang"
+      },
+      "safety_input": {
+        "name": "Veiligheidsingang"
+      },
+      "thermostat": {
+        "name": "Thermostaat"
+      },
+      "external_enable": {
+        "name": "Externe vrijgave"
+      },
+      "problem": {
+        "name": "Probleem"
+      }
+    },
+    "number": {
+      "target_boiler_temperature": {
+        "name": "Gewenste keteltemperatuur"
+      },
+      "target_hot_water_temperature": {
+        "name": "Gewenste warmwatertemperatuur"
+      },
+      "target_room_temperature_day": {
+        "name": "Gewenste kamertemperatuur (dag)"
+      },
+      "target_room_temperature_night": {
+        "name": "Gewenste kamertemperatuur (nacht)"
+      }
+    },
+    "select": {
+      "program_mode": {
+        "name": "Programmamodus",
+        "state": {
+          "day": "Dag",
+          "night": "Nacht",
+          "off": "Uit",
+          "prg1": "Programma 1",
+          "prg2": "Programma 2",
+          "prg3": "Programma 3"
+        }
+      },
+      "work_mode": {
+        "name": "Seizoensmodus",
+        "state": {
+          "winter": "Winter",
+          "summer": "Zomer"
+        }
+      },
+      "fuel_mode": {
+        "name": "Brandstof",
+        "state": {
+          "pellet": "Pellets",
+          "wood": "Hout",
+          "wood_pellet": "Hout en pellets"
+        }
+      }
+    },
+    "switch": {
+      "stove": {
+        "name": "Start/Stop"
+      }
+    },
+    "button": {
+      "clear_errors": {
+        "name": "Fouten wissen"
+      },
+      "key_menu": {
+        "name": "Toets Menu"
+      },
+      "key_ok": {
+        "name": "Toets OK"
+      },
+      "key_plus": {
+        "name": "Toets +"
+      },
+      "key_minus": {
+        "name": "Toets -"
+      },
+      "sync_clock": {
+        "name": "Klok instellen"
+      }
+    },
+    "image": {
+      "display": {
+        "name": "Display"
+      }
+    }
+  },
+  "services": {
+    "read_registers": {
+      "name": "Registers lezen",
+      "description": "Leest een reeks registers van de regeling (alleen lezen) en geeft de waarden ongelijk aan nul terug. Handig om instellingen te vinden die niet in de gedocumenteerde basisregisters staan: maak een dump, wijzig de instelling op de kachel, maak nog een dump en vergelijk.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Kachel",
+          "description": "Alleen nodig als er meerdere kachels zijn ingesteld."
+        },
+        "start": {
+          "name": "Eerste register",
+          "description": "Registernummer zoals in de documentatie van de fabrikant (bijvoorbeeld 10101 voor de eerste instelling op nummer)."
+        },
+        "count": {
+          "name": "Aantal registers",
+          "description": "Maximaal 5000."
+        },
+        "include_zero": {
+          "name": "Nullen opnemen",
+          "description": "Geeft ook registers met waarde 0 terug (groot resultaat)."
+        }
+      }
+    },
+    "explore_menu": {
+      "name": "Menu's verkennen",
+      "description": "Drukt navigatietoetsen (Menu, OK, +, -) in en leest de schermen als tekst. Diagnose: toont de gewijzigde instellingsregisters.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Kachel",
+          "description": "Alleen nodig bij meerdere kachels."
+        },
+        "keys": {
+          "name": "Toetsen",
+          "description": "Lijst met toetsen: menu, ok, plus, minus."
+        },
+        "delay": {
+          "name": "Vertraging",
+          "description": "Seconden na elke toets."
+        },
+        "each": {
+          "name": "Elk scherm",
+          "description": "Geef het scherm na elke toets terug."
+        },
+        "labels": {
+          "name": "Glyphlabels",
+          "description": "Tekens voor onbekende glyphs."
+        },
+        "export_font": {
+          "name": "Lettertype exporteren",
+          "description": "Geef de glyphtabel terug."
+        }
+      }
+    },
+    "export_settings": {
+      "name": "Instellingen exporteren",
+      "description": "Leest alle instellingen van de kachel (waarde, minimum, maximum) per registernummer, alleen lezen. Handig als back-up en om te vergelijken.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Kachel",
+          "description": "Alleen nodig als er meerdere kachels zijn ingesteld."
+        }
+      }
+    }
+  }
+}

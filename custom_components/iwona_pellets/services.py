@@ -21,11 +21,10 @@ from .const import DOMAIN
 from .coordinator import IwonaCoordinator
 from .display import FONT, decode_display, extract_text
 from .protocol import ModbusError
-from .registers import BLOCK_DISPLAY, KEYS, VTHERMO_COUNT, VTHERMO_MAX_SECONDS
+from .registers import BLOCK_DISPLAY, KEYS
 
 SERVICE_READ_REGISTERS = "read_registers"
 SERVICE_EXPLORE_MENU = "explore_menu"
-SERVICE_SET_VTHERMO = "set_virtual_thermostat"
 SERVICE_EXPORT_SETTINGS = "export_settings"
 WATCHED_BLOCKS = ((100, 24), (10100, 30))  # settings compared before / after an exploration
 
@@ -158,25 +157,7 @@ async def _async_explore_menu(call: ServiceCall) -> ServiceResponse:
     return result
 
 
-VTHERMO_SCHEMA = vol.Schema(
-    {
-        vol.Optional(ATTR_ENTRY): str,
-        vol.Optional("index", default=0): vol.All(
-            vol.Coerce(int), vol.Range(min=0, max=VTHERMO_COUNT - 1)
-        ),
-        vol.Required("seconds"): vol.All(
-            vol.Coerce(int), vol.Range(min=0, max=VTHERMO_MAX_SECONDS)
-        ),
-    }
-)
 EXPORT_SCHEMA = vol.Schema({vol.Optional(ATTR_ENTRY): str})
-
-
-async def _async_set_vthermo(call: ServiceCall) -> ServiceResponse:
-    coordinator = _get_coordinator(call)
-    index, seconds = call.data["index"], call.data["seconds"]
-    remaining = await coordinator.async_set_virtual_thermostat(index, seconds)
-    return {"index": index, "requested": seconds, "read_back": remaining}
 
 
 async def _async_export_settings(call: ServiceCall) -> ServiceResponse:
@@ -212,13 +193,6 @@ def async_register_services(hass: HomeAssistant) -> None:
         _async_explore_menu,
         schema=EXPLORE_SCHEMA,
         supports_response=SupportsResponse.ONLY,
-    )
-    hass.services.async_register(
-        DOMAIN,
-        SERVICE_SET_VTHERMO,
-        _async_set_vthermo,
-        schema=VTHERMO_SCHEMA,
-        supports_response=SupportsResponse.OPTIONAL,
     )
     hass.services.async_register(
         DOMAIN,
