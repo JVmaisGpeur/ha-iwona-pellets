@@ -1,0 +1,348 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Poêle Iwona Pellets",
+        "description": "Connexion au convertisseur RS485 <-> WiFi/Ethernet (par exemple un Elfin EW11) câblé sur le port RS485 du contrôleur du poêle.",
+        "data": {
+          "name": "Nom",
+          "host": "Adresse IP ou nom d'hôte du convertisseur",
+          "port": "Port TCP",
+          "slave": "Adresse esclave Modbus",
+          "framing": "Mode du convertisseur"
+        },
+        "data_description": {
+          "framing": "« Transparent » si le convertisseur transmet les trames RS485 brutes (réglage par défaut de l'Elfin EW11). « Modbus TCP » s'il fait office de passerelle Modbus."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossible de joindre le convertisseur. Vérifiez son adresse IP et son port TCP.",
+      "no_response": "Le convertisseur répond mais pas le poêle. Vérifiez le câblage (inversez D+ / D-), l'adresse esclave et que les paramètres série correspondent à ceux du menu Modbus du poêle.",
+      "invalid_response": "L'appareil a répondu avec des données inattendues. Vérifiez le mode du convertisseur et les paramètres série.",
+      "unknown": "Erreur inattendue, consultez le journal de Home Assistant."
+    },
+    "abort": {
+      "already_configured": "Ce poêle est déjà configuré."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "scan_interval": "Intervalle d'interrogation",
+          "start_command": "Valeur écrite pour démarrer le poêle",
+          "sync_clock": "Mettre le poêle à l'heure de Home Assistant",
+          "room_sensor": "Sonde de température de la pièce"
+        },
+        "data_description": {
+          "start_command": "1 = START (appui court), 2 = START avec appui long. Essayez 2 si 1 n'allume pas le poêle.",
+          "sync_clock": "Si la date/heure du poêle diffère de plus de 2 minutes (par exemple après une coupure de courant), elle est réécrite depuis Home Assistant (vérifié à chaque lecture, au plus une fois par heure).",
+          "room_sensor": "Capteur de Home Assistant utilisé pour piloter le poêle (thermostat virtuel 0). Laissez vide pour ne pas l'utiliser, puis activez « Régulation par sonde externe »."
+        }
+      }
+    }
+  },
+  "selector": {
+    "framing": {
+      "options": {
+        "rtu_over_tcp": "Transparent (Modbus RTU sur TCP)",
+        "modbus_tcp": "Passerelle Modbus TCP"
+      }
+    },
+    "start_command": {
+      "options": {
+        "1": "1 – START",
+        "2": "2 – START (appui long)"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "boiler_temperature": {
+        "name": "Température chaudière"
+      },
+      "exhaust_temperature": {
+        "name": "Température des fumées"
+      },
+      "room_temperature": {
+        "name": "Température ambiante"
+      },
+      "feeder_temperature": {
+        "name": "Température d'alimentation"
+      },
+      "hot_water_temperature": {
+        "name": "Température eau chaude sanitaire"
+      },
+      "buffer_temperature": {
+        "name": "Température du ballon tampon"
+      },
+      "room_temperature_internal": {
+        "name": "Température ambiante (capteur interne)"
+      },
+      "room_temperature_extra": {
+        "name": "Température ambiante (capteur supplémentaire)"
+      },
+      "exhaust_fan_power": {
+        "name": "Puissance ventilateur d'extraction"
+      },
+      "blow_in_fan_power": {
+        "name": "Puissance ventilateur de soufflage"
+      },
+      "fan_speed": {
+        "name": "Vitesse du ventilateur"
+      },
+      "throttle_position": {
+        "name": "Position du clapet"
+      },
+      "burner_hours": {
+        "name": "Durée de fonctionnement du brûleur"
+      },
+      "ignition_count": {
+        "name": "Nombre d'allumages"
+      },
+      "process_state": {
+        "name": "État",
+        "state": {
+          "stop": "Arrêt",
+          "fuelling": "Alimentation en combustible",
+          "standby": "Veille",
+          "ignition_cleaning": "Allumage (nettoyage)",
+          "ignition": "Allumage",
+          "power_stabilization": "Stabilisation de la puissance",
+          "maximum_power": "Puissance maximale",
+          "modulated_power": "Puissance modulée",
+          "minimum_power": "Puissance minimale",
+          "blow_in": "Évacuation des gaz",
+          "extinction": "Extinction",
+          "postcombustion": "Postcombustion",
+          "cleaning_opening": "Nettoyage (ouverture)",
+          "cleaning_closing": "Nettoyage (fermeture)",
+          "alarm": "Alarme",
+          "manual_opening": "Ouverture manuelle",
+          "start_dose": "Dose de démarrage",
+          "stabilization_wood": "Stabilisation (bois)",
+          "work_wood": "Fonctionnement (bois)",
+          "add_wood": "Ajout de bois (soufflage)"
+        }
+      },
+      "last_error": {
+        "name": "Dernière erreur",
+        "state": {
+          "boiler_sensor": "Sonde chaudière",
+          "feeder_sensor": "Sonde alimentateur",
+          "exhaust_sensor": "Sonde fumées",
+          "safety_input": "Entrée de sécurité",
+          "capacitive_unjamming": "Capteur capacitif",
+          "boiler_overheat": "Surchauffe chaudière",
+          "feeder_ignition": "Allumage alimentateur",
+          "no_pellets": "Manque de granulés",
+          "no_wood": "Manque de bois",
+          "flame_vanished": "Flamme éteinte",
+          "hot_water_sensor": "Sonde eau chaude",
+          "buffer_overheat": "Surchauffe tampon",
+          "power_loss": "Coupure de courant / arrêt manuel",
+          "buffer_sensor": "Sonde tampon"
+        }
+      }
+    },
+    "binary_sensor": {
+      "flame": {
+        "name": "Flamme"
+      },
+      "feeder": {
+        "name": "Vis d'alimentation"
+      },
+      "ignition": {
+        "name": "Allumeur"
+      },
+      "heating_pump": {
+        "name": "Pompe de chauffage"
+      },
+      "hot_water_pump": {
+        "name": "Pompe eau chaude"
+      },
+      "cleaning": {
+        "name": "Mécanisme de nettoyage"
+      },
+      "alarm_output": {
+        "name": "Sortie alarme"
+      },
+      "safety_input": {
+        "name": "Entrée de sécurité"
+      },
+      "thermostat": {
+        "name": "Thermostat"
+      },
+      "external_enable": {
+        "name": "Validation externe"
+      },
+      "problem": {
+        "name": "Défaut"
+      }
+    },
+    "number": {
+      "target_boiler_temperature": {
+        "name": "Consigne chaudière"
+      },
+      "target_hot_water_temperature": {
+        "name": "Consigne eau chaude sanitaire"
+      },
+      "target_room_temperature_day": {
+        "name": "Consigne ambiance (jour)"
+      },
+      "target_room_temperature_night": {
+        "name": "Consigne ambiance (nuit)"
+      },
+      "external_setpoint": {
+        "name": "Consigne sonde externe"
+      },
+      "external_hysteresis": {
+        "name": "Hystérésis sonde externe"
+      }
+    },
+    "select": {
+      "program_mode": {
+        "name": "Mode de programme",
+        "state": {
+          "day": "Jour",
+          "night": "Nuit",
+          "off": "Off",
+          "prg1": "Programme 1",
+          "prg2": "Programme 2",
+          "prg3": "Programme 3"
+        }
+      },
+      "work_mode": {
+        "name": "Mode saisonnier",
+        "state": {
+          "winter": "Hiver",
+          "summer": "Été"
+        }
+      },
+      "fuel_mode": {
+        "name": "Mode de combustible",
+        "state": {
+          "pellet": "Pellet",
+          "wood": "Bois",
+          "wood_pellet": "Bois/Pellet"
+        }
+      }
+    },
+    "switch": {
+      "stove": {
+        "name": "Start/Stop"
+      },
+      "external_regulation": {
+        "name": "Régulation par sonde externe"
+      }
+    },
+    "button": {
+      "clear_errors": {
+        "name": "Effacer les erreurs"
+      },
+      "key_menu": {
+        "name": "Touche Menu"
+      },
+      "key_ok": {
+        "name": "Touche OK"
+      },
+      "key_plus": {
+        "name": "Touche +"
+      },
+      "key_minus": {
+        "name": "Touche -"
+      },
+      "sync_clock": {
+        "name": "Mettre à l'heure"
+      }
+    },
+    "image": {
+      "display": {
+        "name": "Écran"
+      }
+    }
+  },
+  "services": {
+    "read_registers": {
+      "name": "Lire des registres",
+      "description": "Lit une plage de registres du contrôleur (lecture seule) et renvoie les valeurs non nulles. Sert à trouver les réglages absents des registres de base documentés : faites une lecture, changez le réglage sur le poêle, refaites une lecture et comparez.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Poêle",
+          "description": "Nécessaire seulement si plusieurs poêles sont configurés."
+        },
+        "start": {
+          "name": "Premier registre",
+          "description": "Numéro de registre comme dans la documentation du constructeur (par exemple 10101 pour le premier réglage par numéro)."
+        },
+        "count": {
+          "name": "Nombre de registres",
+          "description": "Jusqu'à 5000."
+        },
+        "include_zero": {
+          "name": "Inclure les zéros",
+          "description": "Renvoie aussi les registres à 0 (résultat volumineux)."
+        }
+      }
+    },
+    "explore_menu": {
+      "name": "Explorer les menus",
+      "description": "Appuie sur les touches de navigation (Menu, OK, +, −) et lit les écrans sous forme de texte. Diagnostic : liste les registres de réglage modifiés.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Poêle",
+          "description": "Seulement utile si plusieurs poêles."
+        },
+        "keys": {
+          "name": "Touches",
+          "description": "Liste de touches : menu, ok, plus, minus."
+        },
+        "delay": {
+          "name": "Délai",
+          "description": "Secondes après chaque touche."
+        },
+        "each": {
+          "name": "Chaque écran",
+          "description": "Renvoie l'écran après chaque touche."
+        },
+        "labels": {
+          "name": "Étiquettes de glyphes",
+          "description": "Caractères pour les glyphes inconnus."
+        },
+        "export_font": {
+          "name": "Exporter la police",
+          "description": "Renvoie la table des glyphes."
+        }
+      }
+    },
+    "set_virtual_thermostat": {
+      "name": "Activer un thermostat virtuel",
+      "description": "Maintient un thermostat virtuel du poêle actif pendant N secondes (le poêle décompte seul, 0 = arrêt, 600 s maximum). À tester poêle allumé.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Poêle",
+          "description": "Nécessaire seulement si plusieurs poêles sont configurés."
+        },
+        "index": {
+          "name": "Thermostat",
+          "description": "Numéro du thermostat virtuel (0 à 3)."
+        },
+        "seconds": {
+          "name": "Durée",
+          "description": "Secondes pendant lesquelles le thermostat reste actif."
+        }
+      }
+    },
+    "export_settings": {
+      "name": "Exporter les réglages",
+      "description": "Lit tous les réglages du poêle (valeur, minimum, maximum) par numéro de registre, en lecture seule. Sert de sauvegarde et de comparaison.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Poêle",
+          "description": "Nécessaire seulement si plusieurs poêles sont configurés."
+        }
+      }
+    }
+  }
+}

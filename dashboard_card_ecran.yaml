@@ -1,0 +1,17 @@
+# Carte « écran du poêle + touches », à coller dans l'éditeur YAML d'un tableau de bord.
+# Adaptez les identifiants d'entités (Paramètres → Appareils → Iwona Pellets).
+type: vertical-stack
+cards:
+  - type: picture-entity
+    entity: image.iwona_pellets_ecran
+    show_name: false
+    show_state: false
+  - type: grid
+    columns: 5
+    square: false
+    cards:
+      - {type: button, entity: button.iwona_pellets_touche_menu, name: Menu, icon: mdi:menu, show_state: false, tap_action: {action: toggle}}
+      - {type: button, entity: switch.iwona_pellets_start_stop, name: Start/Stop, icon: mdi:power, show_state: false, tap_action: {action: toggle}}
+      - {type: button, entity: button.iwona_pellets_touche_minus, name: "-", icon: mdi:minus, show_state: false, tap_action: {action: toggle}}
+      - {type: button, entity: button.iwona_pellets_touche_plus, name: "+", icon: mdi:plus, show_state: false, tap_action: {action: toggle}}
+      - {type: button, entity: button.iwona_pellets_touche_ok, name: OK, icon: mdi:check, show_state: false, tap_action: {action: toggle}}

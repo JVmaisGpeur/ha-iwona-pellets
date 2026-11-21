@@ -1,0 +1,18 @@
+{
+  "domain": "iwona_pellets",
+  "name": "Iwona Pellets",
+  "codeowners": [
+    "@JVmaisGpeur"
+  ],
+  "config_flow": true,
+  "dependencies": [
+    "frontend",
+    "http"
+  ],
+  "documentation": "https://github.com/JVmaisGpeur/ha-iwona-pellets",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/JVmaisGpeur/ha-iwona-pellets/issues",
+  "requirements": [],
+  "version": "0.12.0"
+}

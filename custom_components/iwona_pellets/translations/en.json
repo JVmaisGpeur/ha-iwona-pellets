@@ -1,0 +1,348 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Iwona Pellets stove",
+        "description": "Connect to the RS485 <-> WiFi/Ethernet converter (for example an Elfin EW11) wired to the RS485 port of the stove controller.",
+        "data": {
+          "name": "Name",
+          "host": "Converter IP address or host name",
+          "port": "TCP port",
+          "slave": "Modbus slave ID",
+          "framing": "Converter mode"
+        },
+        "data_description": {
+          "framing": "'Transparent' if the converter forwards raw RS485 frames (Elfin EW11 default). 'Modbus TCP' if it acts as a Modbus gateway."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to the converter. Check its IP address and TCP port.",
+      "no_response": "The converter answers but the stove does not. Check the wiring (swap D+ / D-), the slave ID and that the serial settings match those in the stove's Modbus menu.",
+      "invalid_response": "The device answered with unexpected data. Check the converter mode and serial settings.",
+      "unknown": "Unexpected error, see the Home Assistant log."
+    },
+    "abort": {
+      "already_configured": "This stove is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "scan_interval": "Polling interval",
+          "start_command": "Value written to start the stove",
+          "sync_clock": "Set the stove clock from Home Assistant",
+          "room_sensor": "Room temperature sensor"
+        },
+        "data_description": {
+          "start_command": "1 = START (short key press), 2 = START with a long key press. Try 2 if 1 does not light the stove.",
+          "sync_clock": "If the stove date/time is off by more than 2 minutes (e.g. after a power cut), set it from Home Assistant (checked at each poll, at most once an hour).",
+          "room_sensor": "Home Assistant sensor used to drive the stove (virtual thermostat 0). Leave empty to disable, then turn on the External sensor regulation switch."
+        }
+      }
+    }
+  },
+  "selector": {
+    "framing": {
+      "options": {
+        "rtu_over_tcp": "Transparent (Modbus RTU over TCP)",
+        "modbus_tcp": "Modbus TCP gateway"
+      }
+    },
+    "start_command": {
+      "options": {
+        "1": "1 – START",
+        "2": "2 – START (long press)"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "boiler_temperature": {
+        "name": "Boiler temperature"
+      },
+      "exhaust_temperature": {
+        "name": "Exhaust gas temperature"
+      },
+      "room_temperature": {
+        "name": "Room temperature"
+      },
+      "feeder_temperature": {
+        "name": "Feeder temperature"
+      },
+      "hot_water_temperature": {
+        "name": "Hot water temperature"
+      },
+      "buffer_temperature": {
+        "name": "Buffer temperature"
+      },
+      "room_temperature_internal": {
+        "name": "Room temperature (internal sensor)"
+      },
+      "room_temperature_extra": {
+        "name": "Room temperature (extra sensor)"
+      },
+      "exhaust_fan_power": {
+        "name": "Exhaust fan power"
+      },
+      "blow_in_fan_power": {
+        "name": "Blow-in fan power"
+      },
+      "fan_speed": {
+        "name": "Fan speed"
+      },
+      "throttle_position": {
+        "name": "Throttle position"
+      },
+      "burner_hours": {
+        "name": "Burner operating time"
+      },
+      "ignition_count": {
+        "name": "Ignition count"
+      },
+      "process_state": {
+        "name": "State",
+        "state": {
+          "stop": "Stopped",
+          "fuelling": "Fuelling",
+          "standby": "Standby",
+          "ignition_cleaning": "Ignition (cleaning)",
+          "ignition": "Ignition",
+          "power_stabilization": "Power stabilization",
+          "maximum_power": "Maximum power",
+          "modulated_power": "Modulated power",
+          "minimum_power": "Minimum power",
+          "blow_in": "Blow-in (gas removal)",
+          "extinction": "Extinction",
+          "postcombustion": "Postcombustion",
+          "cleaning_opening": "Cleaning (opening)",
+          "cleaning_closing": "Cleaning (closing)",
+          "alarm": "Alarm",
+          "manual_opening": "Manual opening",
+          "start_dose": "Start dose",
+          "stabilization_wood": "Stabilization (wood)",
+          "work_wood": "Running (wood)",
+          "add_wood": "Adding wood (blowing)"
+        }
+      },
+      "last_error": {
+        "name": "Last error",
+        "state": {
+          "boiler_sensor": "Boiler sensor",
+          "feeder_sensor": "Feeder sensor",
+          "exhaust_sensor": "Exhaust sensor",
+          "safety_input": "Safety input",
+          "capacitive_unjamming": "Capacitive sensor",
+          "boiler_overheat": "Boiler overheat",
+          "feeder_ignition": "Feeder ignition",
+          "no_pellets": "No pellets",
+          "no_wood": "No wood",
+          "flame_vanished": "Flame vanished",
+          "hot_water_sensor": "Hot water sensor",
+          "buffer_overheat": "Buffer overheat",
+          "power_loss": "Power loss / manual off",
+          "buffer_sensor": "Buffer sensor"
+        }
+      }
+    },
+    "binary_sensor": {
+      "flame": {
+        "name": "Flame"
+      },
+      "feeder": {
+        "name": "Feeder (auger)"
+      },
+      "ignition": {
+        "name": "Igniter"
+      },
+      "heating_pump": {
+        "name": "Heating pump"
+      },
+      "hot_water_pump": {
+        "name": "Hot water pump"
+      },
+      "cleaning": {
+        "name": "Cleaning mechanism"
+      },
+      "alarm_output": {
+        "name": "Alarm output"
+      },
+      "safety_input": {
+        "name": "Safety input"
+      },
+      "thermostat": {
+        "name": "Thermostat"
+      },
+      "external_enable": {
+        "name": "External enable"
+      },
+      "problem": {
+        "name": "Problem"
+      }
+    },
+    "number": {
+      "target_boiler_temperature": {
+        "name": "Target boiler temperature"
+      },
+      "target_hot_water_temperature": {
+        "name": "Target hot water temperature"
+      },
+      "target_room_temperature_day": {
+        "name": "Target room temperature (day)"
+      },
+      "target_room_temperature_night": {
+        "name": "Target room temperature (night)"
+      },
+      "external_setpoint": {
+        "name": "External sensor setpoint"
+      },
+      "external_hysteresis": {
+        "name": "External sensor hysteresis"
+      }
+    },
+    "select": {
+      "program_mode": {
+        "name": "Program mode",
+        "state": {
+          "day": "Day",
+          "night": "Night",
+          "off": "Off",
+          "prg1": "Program 1",
+          "prg2": "Program 2",
+          "prg3": "Program 3"
+        }
+      },
+      "work_mode": {
+        "name": "Season mode",
+        "state": {
+          "winter": "Winter",
+          "summer": "Summer"
+        }
+      },
+      "fuel_mode": {
+        "name": "Fuel mode",
+        "state": {
+          "pellet": "Pellet",
+          "wood": "Wood",
+          "wood_pellet": "Wood and pellet"
+        }
+      }
+    },
+    "switch": {
+      "stove": {
+        "name": "Start/Stop"
+      },
+      "external_regulation": {
+        "name": "External sensor regulation"
+      }
+    },
+    "button": {
+      "clear_errors": {
+        "name": "Clear errors"
+      },
+      "key_menu": {
+        "name": "Key Menu"
+      },
+      "key_ok": {
+        "name": "Key OK"
+      },
+      "key_plus": {
+        "name": "Key +"
+      },
+      "key_minus": {
+        "name": "Key -"
+      },
+      "sync_clock": {
+        "name": "Set clock"
+      }
+    },
+    "image": {
+      "display": {
+        "name": "Display"
+      }
+    }
+  },
+  "services": {
+    "read_registers": {
+      "name": "Read registers",
+      "description": "Read a range of controller registers (read-only) and return the non-zero values. Use it to find settings that are not in the documented basic registers: take a dump, change the setting on the stove, take another one and compare.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Stove",
+          "description": "Only needed if several stoves are configured."
+        },
+        "start": {
+          "name": "First register",
+          "description": "Register number as in the manufacturer's documentation (for example 10101 for the first setting by number)."
+        },
+        "count": {
+          "name": "Number of registers",
+          "description": "Up to 5000."
+        },
+        "include_zero": {
+          "name": "Include zeros",
+          "description": "Also return registers whose value is 0 (large result)."
+        }
+      }
+    },
+    "explore_menu": {
+      "name": "Explore the menus",
+      "description": "Press navigation keys (Menu, OK, +, -) and read the screens as text. Diagnostic: lists the settings registers that changed.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Stove",
+          "description": "Only needed with several stoves."
+        },
+        "keys": {
+          "name": "Keys",
+          "description": "List of keys: menu, ok, plus, minus."
+        },
+        "delay": {
+          "name": "Delay",
+          "description": "Seconds after each key."
+        },
+        "each": {
+          "name": "Every screen",
+          "description": "Return the screen after every key."
+        },
+        "labels": {
+          "name": "Glyph labels",
+          "description": "Characters for unknown glyphs."
+        },
+        "export_font": {
+          "name": "Export font",
+          "description": "Return the glyph table."
+        }
+      }
+    },
+    "set_virtual_thermostat": {
+      "name": "Activate a virtual thermostat",
+      "description": "Keeps a virtual thermostat of the stove active for N seconds (the stove counts it down by itself, 0 = off, 600 s maximum). Test with the stove running.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Stove",
+          "description": "Only needed if several stoves are configured."
+        },
+        "index": {
+          "name": "Thermostat",
+          "description": "Virtual thermostat number (0 to 3)."
+        },
+        "seconds": {
+          "name": "Duration",
+          "description": "Seconds the thermostat stays active."
+        }
+      }
+    },
+    "export_settings": {
+      "name": "Export settings",
+      "description": "Reads every stove setting (value, minimum, maximum) by register number, read-only. Useful as a backup and for comparisons.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Stove",
+          "description": "Only needed if several stoves are configured."
+        }
+      }
+    }
+  }
+}

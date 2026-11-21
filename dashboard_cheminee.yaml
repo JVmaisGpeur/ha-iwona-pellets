@@ -1,0 +1,18 @@
+# Tableau de bord « Cheminée » (mode YAML brut) : photo en fond + carte animée.
+# Le fond est servi par l'intégration : /iwona_pellets/stove.jpg
+title: Cheminée
+views:
+  - title: Cheminée
+    path: cheminee
+    type: panel
+    background: >-
+      linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)),
+      center / cover no-repeat url("/iwona_pellets/stove.jpg") fixed
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:iwona-stove-card
+          - type: picture-entity
+            entity: image.iwona_pellets_ecran   # écran d'origine, facultatif
+            show_name: false
+            show_state: false
