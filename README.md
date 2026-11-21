@@ -4,7 +4,7 @@ Intégration personnalisée pour les poêles/cheminées **Iwona Pellets** équip
 
 > Projet communautaire non officiel, sans lien avec Iwona Pellets ni P.W. KEY. Utilisation à vos risques : un poêle est un appareil de chauffage. Lisez la section [Sécurité](#sécurité).
 
-> **Statut (v0.12.0)** : testée sur un poêle réel (RK-2014KH, firmware C407) : lecture des états, marche/arrêt, consignes, combustible, écran et touches virtuelles. Les retours de test sont les bienvenus.
+> **Statut (v0.12.1)** : testée sur un poêle réel (RK-2014KH, firmware C407) : lecture des états, marche/arrêt, consignes, combustible, écran et touches virtuelles. Les retours de test sont les bienvenus.
 
 <p align="center">
   <img src="docs/apercu-carte.png" alt="Carte Cheminée en fonctionnement" width="300">
